@@ -1,2 +1,2 @@
 # pyt-WMS
-out python final project-domain {ware house}
+Our python final project-domain {ware house}
