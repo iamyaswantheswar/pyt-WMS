@@ -5,71 +5,76 @@ import csv
 
 ##functions
 def Check_admin():
-    isadmin=False
     def get_passwd():
-        nonlocal isadmin
         f=open("Root/Admin.txt","r")
-        if passwd.get()==f.read():
+        admin_password = f.read().strip()
+        f.close()
+        if passwd.get() == admin_password:
             messagebox.showinfo("Success","Welcome Admin")
-            isadmin=True
             second.destroy()
-            
+            open_add_user_window()
         else:
             messagebox.showerror("Error","Invalid password")
-            second.destroy()
-            Check_admin()
+            passwd.delete(0, ui.END)
+
     second = ui.Toplevel(login)
     second.title("ADMIN LOGIN")
     second.geometry("300x150")
     second.grab_set()
     second.focus_set()
     second.configure(bg="white")
-    label = ui.Label(second, text="Enter ADMIN password")
+    label = ui.Label(second, text="Enter ADMIN password", bg="white")
     label.place(relx=0.5, rely=0.3, anchor=ui.CENTER)
     passwd = ui.Entry(second, width=20, font=("Times", 15), bd=2, show="*")
     passwd.place(relx=0.5, rely=0.5, anchor=ui.CENTER)
     enter = ui.Button(second, text="Continue", command=get_passwd)
     enter.place(relx=0.5, rely=0.7, anchor=ui.CENTER)
-    passwd.bind("<Return>", lambda event:get_passwd)
-    if isadmin==True:
-        return True
-        second.destroy()
-        
-    
+    passwd.bind("<Return>", lambda event: get_passwd())
 
-def add_user():
-    if Check_admin():
-        a = ui.Toplevel(login)
-        a.title("Add User")
-        a.geometry("300x150")
-        a.grab_set()
-        a.focus_set()
-        a.configure(bg="white")
-        label = ui.Label(a, text="Enter username", bg="white")
-        label.place(relx=0.5, rely=0.3, anchor=ui.CENTER)
-        username = ui.Entry(a, width=20, font=("Times", 15), bd=2)
-        username.place(relx=0.5, rely=0.45, anchor=ui.CENTER)
-        passwd_lable = ui.Label(a, text="Enter password", bg="white")
-        passwd_lable.place(relx=0.5, rely=0.5, anchor=ui.CENTER)
-        passwd = ui.Entry(a, width=20, font=("Times", 15), bd=2, show="*")
-        passwd.place(relx=0.5, rely=0.55, anchor=ui.CENTER)
-        passwd2_lable = ui.Label(a, text="Re-enter password", bg="white")
-        passwd2_lable.place(relx=0.5, rely=0.6, anchor=ui.CENTER)
-        passwd2 = ui.Entry(a, width=20, font=("Times", 15), bd=2, show="*")
-        passwd2.place(relx=0.5, rely=0.65, anchor=ui.CENTER)
-        if passwd.get()==passwd2.get():
-            with open("Root/Users.csv","a") as f:
+def open_add_user_window():
+    def save_user():
+        if passwd.get() == passwd2.get() and username.get().strip() != "":
+            with open("Root/Users.csv","a", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username.get(),passwd.get()])
-                messagebox.showinfo("Success","User added successfully")
-
-        else:
-            messagebox.showerror("Error","Passwords do not match")
+            messagebox.showinfo("Success","User added successfully")
             a.destroy()
-            add_user()
+        else:
+            if username.get().strip() == "":
+                messagebox.showerror("Error","Username cannot be empty")
+            else:
+                messagebox.showerror("Error","Passwords do not match")
+
+    a = ui.Toplevel(login)
+    a.title("Add User")
+    a.geometry("400x300")
+    a.grab_set()
+    a.focus_set()
+    a.configure(bg="white")
+
+    label = ui.Label(a, text="Enter username", bg="white")
+    label.place(relx=0.5, rely=0.2, anchor=ui.CENTER)
+    username = ui.Entry(a, width=20, font=("Times", 15), bd=2)
+    username.place(relx=0.5, rely=0.3, anchor=ui.CENTER)
+
+    passwd_lable = ui.Label(a, text="Enter password", bg="white")
+    passwd_lable.place(relx=0.5, rely=0.4, anchor=ui.CENTER)
+    passwd = ui.Entry(a, width=20, font=("Times", 15), bd=2, show="*")
+    passwd.place(relx=0.5, rely=0.5, anchor=ui.CENTER)
+
+    passwd2_lable = ui.Label(a, text="Re-enter password", bg="white")
+    passwd2_lable.place(relx=0.5, rely=0.6, anchor=ui.CENTER)
+    passwd2 = ui.Entry(a, width=20, font=("Times", 15), bd=2, show="*")
+    passwd2.place(relx=0.5, rely=0.7, anchor=ui.CENTER)
+
+    save_button = ui.Button(a, text="Add User", command=save_user)
+    save_button.place(relx=0.5, rely=0.8, anchor=ui.CENTER)
+
+def add_user():
+    Check_admin()
 
 
-    
+
 
 
 ##Main window
