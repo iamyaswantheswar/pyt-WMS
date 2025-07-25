@@ -10,14 +10,12 @@ def Check_admin():
         nonlocal isadmin
         f=open("Root/Admin.txt","r")
         if passwd.get()==f.read():
-            messagebox.showinfo("Success","Welcome Admin")
+            f.close
             isadmin=True
-            second.destroy()
-            
+            messagebox.showinfo("Success","Welcome Admin")
         else:
             messagebox.showerror("Error","Invalid password")
-            second.destroy()
-            Check_admin()
+            isadmin=False
     second = ui.Toplevel(login)
     second.title("ADMIN LOGIN")
     second.geometry("300x150")
@@ -30,10 +28,11 @@ def Check_admin():
     passwd.place(relx=0.5, rely=0.5, anchor=ui.CENTER)
     enter = ui.Button(second, text="Continue", command=get_passwd)
     enter.place(relx=0.5, rely=0.7, anchor=ui.CENTER)
-    passwd.bind("<Return>", lambda event:get_passwd)
-    if isadmin==True:
-        return True
+    #passwd.bind("<Return>", lambda event:get_passwd)
+    if isadmin:
         second.destroy()
+        return True
+    
         
     
 
