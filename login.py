@@ -13,9 +13,12 @@ def Check_admin():
             f.close
             isadmin=True
             messagebox.showinfo("Success","Welcome Admin")
+            second.destroy()
         else:
             messagebox.showerror("Error","Invalid password")
             isadmin=False
+            second.destroy()
+            Check_admin()
     second = ui.Toplevel(login)
     second.title("ADMIN LOGIN")
     second.geometry("300x150")
@@ -28,6 +31,7 @@ def Check_admin():
     passwd.place(relx=0.5, rely=0.5, anchor=ui.CENTER)
     enter = ui.Button(second, text="Continue", command=get_passwd)
     enter.place(relx=0.5, rely=0.7, anchor=ui.CENTER)
+    login.wait_window(second)
     #passwd.bind("<Return>", lambda event:get_passwd)
     if isadmin:
         second.destroy()
@@ -38,6 +42,7 @@ def Check_admin():
 
 def add_user():
     if Check_admin():
+        print("Admin logged in")
         a = ui.Toplevel(login)
         a.title("Add User")
         a.geometry("300x150")
@@ -56,16 +61,7 @@ def add_user():
         passwd2_lable.place(relx=0.5, rely=0.6, anchor=ui.CENTER)
         passwd2 = ui.Entry(a, width=20, font=("Times", 15), bd=2, show="*")
         passwd2.place(relx=0.5, rely=0.65, anchor=ui.CENTER)
-        if passwd.get()==passwd2.get():
-            with open("Root/Users.csv","a") as f:
-                writer=csv.writer(f)
-                writer.writerow([username.get(),passwd.get()])
-                messagebox.showinfo("Success","User added successfully")
-
-        else:
-            messagebox.showerror("Error","Passwords do not match")
-            a.destroy()
-            add_user()
+        
 
 
     
