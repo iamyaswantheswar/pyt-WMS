@@ -8,7 +8,7 @@ def Check_admin():
     isadmin=False
     def get_passwd():
         nonlocal isadmin
-        f=open("../../data/Admin.txt", "r")
+        f=open("Root/Admin.txt","r")
         if passwd.get()==f.read():
             f.close
             isadmin=True
@@ -37,20 +37,31 @@ def Check_admin():
         second.destroy()
         return True
     
+
+            
         
+
+
     
 
 def add_user():
+    def match_passwd():
+        if passwd.get() == passwd2.get():
+            with open("Root/Users.csv","a") as f:
+                writer=csv.writer(f)
+                writer.writerow([username.get(),passwd.get()])
+                messagebox.showinfo("Success","User added successfully")
+                a.destroy()
     if Check_admin():
         print("Admin logged in")
         a = ui.Toplevel(login)
         a.title("Add User")
-        a.geometry("300x150")
-        a.grab_set()
+        a.geometry("500x500")
+        #a.grab_set()
         a.focus_set()
         a.configure(bg="white")
         label = ui.Label(a, text="Enter username", bg="white")
-        label.place(relx=0.5, rely=0.3, anchor=ui.CENTER)
+        label.place(relx=0.5, rely=0.4, anchor=ui.CENTER)
         username = ui.Entry(a, width=20, font=("Times", 15), bd=2)
         username.place(relx=0.5, rely=0.45, anchor=ui.CENTER)
         passwd_lable = ui.Label(a, text="Enter password", bg="white")
@@ -61,6 +72,10 @@ def add_user():
         passwd2_lable.place(relx=0.5, rely=0.6, anchor=ui.CENTER)
         passwd2 = ui.Entry(a, width=20, font=("Times", 15), bd=2, show="*")
         passwd2.place(relx=0.5, rely=0.65, anchor=ui.CENTER)
+        enter = ui.Button(a, text="Add User", command=match_passwd)
+        enter.place(relx=0.5, rely=0.7, anchor=ui.CENTER)
+        #login.wait_window(a)
+        
         
 
 
