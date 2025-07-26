@@ -1,0 +1,23 @@
+your-project-name/
+│
+├── .gitignore
+├── README.md
+├── LICENSE                # (optional but recommended)
+├── requirements.txt       # or pyproject.toml / Pipfile
+├── setup.py               # (if it's a package)
+│
+├── src/                   # Main source code
+│   └── your_package_name/
+│       ├── __init__.py
+│       ├── module1.py
+│       ├── module2.py
+│       └── ...
+│
+├── tests/                 # Unit tests
+│   ├── __init__.py
+│   ├── test_module1.py
+│   └── test_module2.py
+│
+├── data/                  # (if used) Input/output data
+│
+└── docs/                  # (if used) Documentation

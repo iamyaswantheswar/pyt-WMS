@@ -8,7 +8,7 @@ def Check_admin():
     isadmin=False
     def get_passwd():
         nonlocal isadmin
-        f=open("Root/Admin.txt","r")
+        f=open("../../data/Admin.txt", "r")
         if passwd.get()==f.read():
             f.close
             isadmin=True
