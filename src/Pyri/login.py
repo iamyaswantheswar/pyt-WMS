@@ -5,20 +5,22 @@ import csv
 
 ##functions
 def Check_admin():
-    isadmin=False
+    isadmin = False
+
     def get_passwd():
         nonlocal isadmin
-        f=open("Root/Admin.txt","r")
-        if passwd.get()==f.read():
+        f = open("data/Admin.txt", "r")
+        if passwd.get() == f.read():
             f.close
-            isadmin=True
-            messagebox.showinfo("Success","Welcome Admin")
+            isadmin = True
+            messagebox.showinfo("Success", "Welcome Admin")
             second.destroy()
         else:
-            messagebox.showerror("Error","Invalid password")
-            isadmin=False
+            messagebox.showerror("Error", "Invalid password")
+            isadmin = False
             second.destroy()
             Check_admin()
+
     second = ui.Toplevel(login)
     second.title("ADMIN LOGIN")
     second.geometry("300x150")
@@ -36,22 +38,18 @@ def Check_admin():
     if isadmin:
         second.destroy()
         return True
-    
 
-            
-        
-
-
-    
 
 def add_user():
+
     def match_passwd():
         if passwd.get() == passwd2.get():
-            with open("Root/Users.csv","a") as f:
-                writer=csv.writer(f)
-                writer.writerow([username.get(),passwd.get()])
-                messagebox.showinfo("Success","User added successfully")
+            with open("data/Users.csv", "a") as f:
+                writer = csv.writer(f)
+                writer.writerow([username.get(), passwd.get()])
+                messagebox.showinfo("Success", "User added successfully")
                 a.destroy()
+
     if Check_admin():
         print("Admin logged in")
         a = ui.Toplevel(login)
@@ -75,11 +73,6 @@ def add_user():
         enter = ui.Button(a, text="Add User", command=match_passwd)
         enter.place(relx=0.5, rely=0.7, anchor=ui.CENTER)
         #login.wait_window(a)
-        
-        
-
-
-    
 
 
 ##Main window
@@ -95,7 +88,7 @@ menu = ui.Menu(login)
 login.config(menu=menu)
 Users = ui.Menu(menu, tearoff=0)
 menu.add_cascade(label="Administration", menu=Users)
-Users.add_command(label="Add User", command= add_user)
+Users.add_command(label="Add User", command=add_user)
 #Users.add_command(label="Remove User", command=lambda: login.destroy())
 #Users.add_command(label="Update User", command=lambda: update_user())
 #Users.add_command(label="List Users", command=lambda: list_user())
