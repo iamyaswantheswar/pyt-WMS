@@ -1,6 +1,12 @@
 import tkinter as ui
 from tkinter import messagebox
 import csv
+from pathlib import Path
+
+# Get the path to the current script
+
+
+base_path = Path(__file__).parent.parent.parent  # Points to pyt-WMS directory
 
 
 ##functions
@@ -9,8 +15,11 @@ def Check_admin():
 
     def get_passwd():
         nonlocal isadmin
-        f = open("data/Admin.txt", "r")
-        if passwd.get() == f.read():
+        file_path = base_path / "data" / "Admin.txt"
+        with open(file_path, "r") as f:
+            contents = f.read()
+
+        if passwd.get() == contents:
             f.close
             isadmin = True
             messagebox.showinfo("Success", "Welcome Admin")
@@ -41,10 +50,10 @@ def Check_admin():
 
 
 def add_user():
-
     def match_passwd():
+        file_path = base_path / "data" / "Users.csv"
         if passwd.get() == passwd2.get():
-            with open("data/Users.csv", "a") as f:
+            with open(file_path, "a") as f:
                 writer = csv.writer(f)
                 writer.writerow([username.get(), passwd.get()])
                 messagebox.showinfo("Success", "User added successfully")
