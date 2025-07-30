@@ -29,6 +29,15 @@ class Inventory:
         self.quantity = quantity
         self.expiry = expiry
 
+    def add_stock(self, quantity):
+        try:
+            if quantity < 0:
+                raise ValueError
+            else:
+                self.quantity += quantity
+        except ValueError:
+            raise ValueError("Quantity must be an integer")
+
 
 
     
