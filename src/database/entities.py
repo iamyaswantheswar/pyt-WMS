@@ -22,10 +22,6 @@ class Location:
         self.shelf = shelf
 
 class Inventory:
-    product: Product
-    location: Location
-    quantity: int
-    expiry: str
 
     def __init__(self, product, location, quantity, expiry):
         self.product = product
