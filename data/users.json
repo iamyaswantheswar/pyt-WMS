@@ -1,13 +1,1 @@
-
-{
-  "users": [
-    {
-      "username": "admin",
-      "password": "admin"
-    },
-    {
-      "username": "user", 
-      "password": "user"
-    }
-  ]
-}
+{"users": [{"username": "a", "password": "asdf"}, {"username": "user", "password": "yaswanth"}, {"username": "yaswanth", "password": "eswar"}, {"username": "vasanth", "password": "ramu"}]}
