@@ -65,18 +65,27 @@ def add_user():
     def user_check():
         file_path = base_path / "data" / "users.json"
         with open(file_path, "r") as f:
-            users = json.load(f)
-            print(users)
-        if username.get() in users:
-            messagebox.showerror("Error", "User already exists")
-            return False
+            data = json.load(f)
+        # Check if username already exists
+        for user in data["users"]:
+            if user["username"] == username.get():
+                messagebox.showerror("Error", "User already exists")
+                return False
+        return True
     def match_passwd():
         if passwd.get() == passwd2.get():
-            file_path = base_path / "data" / "users.json"
-            with open(file_path, "a+") as g:
-                data=json.load (g)
-                data["users"].append({"username":username.get(),"password":passwd.get()})
-                json.dumps(data,g)
+            if user_check():  # Check if user already exists
+                file_path = base_path / "data" / "users.json"
+                with open(file_path, "r+") as g:
+                    data = json.load(g)
+                    data["users"].append({"username": username.get(), "password": passwd.get()})
+                    g.seek(0)  # Go back to beginning of file
+                    json.dump(data, g)
+                    g.truncate()  # Remove any leftover content
+                messagebox.showinfo("Success", "User added successfully")
+                a.destroy()
+        else:
+            messagebox.showerror("Error", "Passwords do not match")
             
     if Check_admin():
         print("Admin logged in")
