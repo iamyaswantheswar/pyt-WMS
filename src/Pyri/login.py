@@ -73,7 +73,7 @@ def add_user():
     def match_passwd():
         if passwd.get() == passwd2.get():
             file_path = base_path / "data" / "users.json"
-            with open(file_path, "a") as g:
+            with open(file_path, "a+") as g:
                 data=json.load (g)
                 data["users"].append({"username":username.get(),"password":passwd.get()})
                 json.dumps(data,g)
