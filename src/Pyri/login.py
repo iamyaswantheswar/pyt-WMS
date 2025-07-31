@@ -65,7 +65,7 @@ def add_user():
     def user_check():
         file_path = base_path / "data" / "users.json"
         with open(file_path, "r") as f:
-            data = json.load(f)
+            data = json.loads(f)
         # Check if username already exists
         for user in data["users"]:
             if user["username"] == username.get():
