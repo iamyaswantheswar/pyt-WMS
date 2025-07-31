@@ -3,9 +3,10 @@ from tkinter import messagebox
 from pathlib import Path
 from cryptography.fernet import Fernet
 import Userhandeling as uh
-
+import subprocess
+import sys
 # Get the path to the current script
-
+base_path = Path(__file__).parent.parent.parent
 
 ##functions
 def Check_admin():
@@ -166,6 +167,17 @@ header_main.config(font=("Times", 30, "bold"))
 header_main.place(relx=0.5, rely=0.1, anchor=ui.CENTER)
 
 #input labels and entry
+def auth():
+    if uh.login_auth(username.get(), passwd.get()):
+        messagebox.showinfo("Success", "Login successful")
+        file_path = base_path / "src" / "Pyri" / "home.py"
+        login.destroy()
+        subprocess.run([sys.executable, file_path])
+        sys.exit()
+        
+    else:
+        messagebox.showerror("Error", "Invalid username or password")
+        
 
 username_lable = ui.Label(login, text="Enter username", bg="white")
 username_lable.place(relx=0.5, rely=0.4, anchor=ui.CENTER)
@@ -175,5 +187,6 @@ passwd_lable = ui.Label(login, text="Enter password", bg="white")
 passwd_lable.place(relx=0.5, rely=0.5, anchor=ui.CENTER)
 passwd = ui.Entry(login, width=20, font=("Times", 15), bd=2, show="*")
 passwd.place(relx=0.5, rely=0.55, anchor=ui.CENTER)
-
+enter = ui.Button(login, text="Login", command=lambda: auth())
+enter.place(relx=0.5, rely=0.6, anchor=ui.CENTER)
 login.mainloop()

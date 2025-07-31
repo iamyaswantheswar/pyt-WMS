@@ -59,3 +59,11 @@ def update_user(username, passwd):
                 add_user(username, passwd)
                 return True
         return False    
+def login_auth(username, passwd):
+    file_path = base_path / "data" / "users.json"
+    with open(file_path, "r") as f:
+        data = json.load(f)
+    for u in data["users"]:
+        if u["username"] == username and u["password"] == passwd:
+            return True
+    return False
