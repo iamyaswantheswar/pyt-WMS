@@ -29,6 +29,7 @@ class Inventory:
         self.quantity = quantity
         self.expiry = expiry
 
+chicken = Product("1234567890123", "Chicken", "Meat", "10x10x10", "1kg")
 
+loc1 = Location("A", "1", "1", "1", "1")
 
-    

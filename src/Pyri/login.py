@@ -2,24 +2,37 @@ import tkinter as ui
 from tkinter import messagebox
 import csv
 from pathlib import Path
+from cryptography.fernet import Fernet
+import json
 
 # Get the path to the current script
 
-
 base_path = Path(__file__).parent.parent.parent  # Points to pyt-WMS directory
+
+# Load the saved key
+file_path = base_path / "data" / "secret.key"
+with open(file_path, "rb") as key_file:
+    key = key_file.read()
+
+# Load the encrypted password
+file_path = base_path / "data" / "encrypted_password.txt"
+with open(file_path, "rb") as f:
+    encrypted = f.read()
+
+
+
+
 
 
 ##functions
 def Check_admin():
     isadmin = False
-
     def get_passwd():
         nonlocal isadmin
-        file_path = base_path / "data" / "Admin.txt"
-        with open(file_path, "r") as f:
-            contents = f.read()
-
-        if passwd.get() == contents:
+        # Decrypt
+        cipher = Fernet(key)
+        decrypted_password = cipher.decrypt(encrypted).decode()
+        if passwd.get() ==decrypted_password :
             f.close
             isadmin = True
             messagebox.showinfo("Success", "Welcome Admin")
@@ -28,7 +41,6 @@ def Check_admin():
             messagebox.showerror("Error", "Invalid password")
             isadmin = False
             second.destroy()
-            Check_admin()
 
     second = ui.Toplevel(login)
     second.title("ADMIN LOGIN")
@@ -51,14 +63,21 @@ def Check_admin():
 
 def add_user():
     def match_passwd():
-        file_path = base_path / "data" / "Users.csv"
+        file_path = base_path / "data" / "users.json"
+         
         if passwd.get() == passwd2.get():
-            with open(file_path, "a") as f:
-                writer = csv.writer(f)
-                writer.writerow([username.get(), passwd.get()])
-                messagebox.showinfo("Success", "User added successfully")
-                a.destroy()
+                with open(file_path, 'r') as file:
+                    users = json.load(file)
 
+                new_user = {username.get(),passwd.get()}
+                print(new_user)
+                users.append(new_user)
+
+                with open('users.json', 'w') as file:
+                    json.dump(users, file, indent=4)
+        else:
+            messagebox.showerror("Error", "Passwords do not match")
+            
     if Check_admin():
         print("Admin logged in")
         a = ui.Toplevel(login)
@@ -82,7 +101,24 @@ def add_user():
         enter = ui.Button(a, text="Add User", command=match_passwd)
         enter.place(relx=0.5, rely=0.7, anchor=ui.CENTER)
         #login.wait_window(a)
-
+#remove user
+j=''''def remove_user():
+    if Check_admin():
+        print("Admin logged in")
+        def edit_file():
+            file_path= base_path / "data" / "Users.csv"
+            with open(file_path, "r") as f:
+                
+            
+        a = ui.Toplevel(login)
+        a.title("Remove User")
+        a.geometry("500x500")
+        #a.grab_set()
+        a.focus_set()
+        lable=ui.Label(a, text="Enter username to delete", bg="white")
+        entry=ui.Entry(a, width=20, font=("Times", 15), bd=2)
+        entry.place(relx=0.5, rely=0.45, anchor=ui.CENTER)
+        enter = ui.Button(a, text="Remove User", command=lambda:edit_file())'''''
 
 ##Main window
 
@@ -98,7 +134,7 @@ login.config(menu=menu)
 Users = ui.Menu(menu, tearoff=0)
 menu.add_cascade(label="Administration", menu=Users)
 Users.add_command(label="Add User", command=add_user)
-#Users.add_command(label="Remove User", command=lambda: login.destroy())
+Users.add_command(label="Remove User", command=lambda:remove_user())
 #Users.add_command(label="Update User", command=lambda: update_user())
 #Users.add_command(label="List Users", command=lambda: list_user())
 #Exit=ui.Menu(menu,tearoff=0)
