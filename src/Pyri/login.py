@@ -66,15 +66,26 @@ def add_user():
         file_path = base_path / "data" / "users.json"
          
         if passwd.get() == passwd2.get():
+            def load_json():
                 with open(file_path, 'r') as file:
+                
                     users = json.load(file)
 
-                new_user = {username.get(),passwd.get()}
-                print(new_user)
-                users.append(new_user)
 
-                with open('users.json', 'w') as file:
+            def save_json(users):
+                with open(file_path, 'w') as file:
                     json.dump(users, file, indent=4)
+            def append_user(username, password):
+                users=load_json()
+                
+                for user in users:
+                    if user['username'] == username:
+                        messagebox.showerror("Error", "Username already exists")
+                        return
+                users.append({'username': username, 'password': password})
+                save_json(users)
+                messagebox.showinfo("Success", "User added successfully")
+                append_user(username.get(), passwd.get())
         else:
             messagebox.showerror("Error", "Passwords do not match")
             
@@ -134,7 +145,7 @@ login.config(menu=menu)
 Users = ui.Menu(menu, tearoff=0)
 menu.add_cascade(label="Administration", menu=Users)
 Users.add_command(label="Add User", command=add_user)
-Users.add_command(label="Remove User", command=lambda:remove_user())
+#Users.add_command(label="Remove User", command=lambda:remove_user())
 #Users.add_command(label="Update User", command=lambda: update_user())
 #Users.add_command(label="List Users", command=lambda: list_user())
 #Exit=ui.Menu(menu,tearoff=0)
