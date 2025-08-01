@@ -43,7 +43,8 @@ class cmds:
   
 class topbarelements(cmds):
   
-  def __init__(self,name):
+  def __init__(self,name,topbar,home):
+    super().__init__(home)
     self.name=name
     self.name=ui.Button(topbar,text=name,bg="black",fg="white",bd=0,font=("Times", 10, "bold"),anchor="w" ,command= lambda :self.createcmd(name))
     self.name.config(width=10,height=2,borderwidth=0,highlightthickness=0)
@@ -66,7 +67,7 @@ elementpos=0.07
 top=["Dashboard","Inventory","Sales","Purchases","Demand"]
 for i in top:
   y=len(top[1-top.index(i)])
-  i=topbarelements(i)
+  i=topbarelements(i,topbar,home)
   i.place(elementpos,0.05)
   elementpos+=0.15
 home.mainloop()
