@@ -6,7 +6,7 @@ class cmds:
     self.lable_frame.place(relx=0.5,rely=0.5,anchor="center")
     self.lable_frame.config(width=500,height=500,bg="blue")
   def destroy(self):
-      self.lable_frame.destroy
+      self.lable_frame.destroy()
   def dashboard_ui(self):
     self.destroy()
     self.lbl=ui.Label(self.lable_frame,text="welcome to Dashboard")
