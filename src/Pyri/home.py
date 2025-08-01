@@ -1,19 +1,30 @@
 import tkinter as ui
-
-def dashboard_ui(s=None):
+class cmds:
+  def __init__(self):
+    pass
+    
+  def dashboard_ui(self,a=None,b=None):
     print("dasbord working")
-
-def createcmd(name):
-    cmd=name.lower() + "_ui"
-    func=globals().get(cmd)
-    if func:
-      func()
+  def inventory_ui(self):
+    print("inventory working")
+  def sales_ui(self):
+    print("sales working")
+  def purchases_ui(self):
+    print("purchases working")
+  def demand_ui(self):
+    print("demand working")
+    
+  def createcmd(self,name):
+      cmd=name.lower() + "_ui"
+      func=globals().get(cmd)
+      if func:
+        func()
   
-class topbarelements:
+class topbarelements(cmds):
   
   def __init__(self,name):
     self.name=name
-    self.name=ui.Button(topbar,text=name,bg="black",fg="white",bd=0,font=("Times", 10, "bold"),anchor="w" ,command= lambda: createcmd(name))
+    self.name=ui.Button(topbar,text=name,bg="black",fg="white",bd=0,font=("Times", 10, "bold"),anchor="w" ,command= lambda: super().createcmd(name))
     self.name.config(width=10,height=2,borderwidth=0,highlightthickness=0)
     self.name.bind("<Enter>",lambda event: self.name.config(bg="white",fg="black"))
     self.name.bind("<Leave>",lambda event: self.name.config(bg="black",fg="white"))
