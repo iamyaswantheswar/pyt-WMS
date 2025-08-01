@@ -2,36 +2,31 @@ import tkinter as ui
 class cmds:
   def __init__(self,home):
     self.home=home
-    self.lables=[]
+    self.lable_frame=ui.Frame(self.home)
+    self.lable_frame.place(relx=0.5,rely=0.5,anchor="center")
+    self.lable_frame.config(width=500,height=500,bg="blue")
   def destroy(self):
-    for i in self.lables:
-      i.destroy()
-    
+      self.lable_frame.destroy
   def dashboard_ui(self):
     self.destroy()
-    self.lbl=ui.Label(self.home,text="welcome to Dashboard")
+    self.lbl=ui.Label(self.lable_frame,text="welcome to Dashboard")
     self.lbl.place(relx=0.5,rely=0.5)
-    self.lables.append(self.lbl)
   def inventory_ui(self):
     self.destroy()
-    self.lbl=ui.Label(self.home,text="welcome to Inventory")
+    self.lbl=ui.Label(self.lable_frame,text="welcome to Inventory")
     self.lbl.place(relx=0.5,rely=0.5)
-    self.lables.append(self.lbl)
   def sales_ui(self):
     self.destroy()
-    self.lbl=ui.Label(self.home,text="welcome to Sales")
+    self.lbl=ui.Label(self.lable_frame,text="welcome to Sales")
     self.lbl.place(relx=0.5,rely=0.5)
-    self.lables.append(self.lbl)
   def purchases_ui(self):
     self.destroy()
-    self.lbl=ui.Label(self.home,text="welcome to Purchases")
+    self.lbl=ui.Label(self.lable_frame,text="welcome to Purchases")
     self.lbl.place(relx=0.5,rely=0.5)
-    self.lables.append(self.lbl)
   def demand_ui(self):
     self.destroy()
-    self.lbl=ui.Label(self.home,text="welcome to Demand")
+    self.lbl=ui.Label(self.lable_frame,text="welcome to Demand")
     self.lbl.place(relx=0.5,rely=0.5)
-    self.lables.append(self.lbl)
   
       
     
