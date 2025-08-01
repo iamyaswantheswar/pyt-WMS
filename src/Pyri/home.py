@@ -9,24 +9,39 @@ class cmds:
       self.lable_frame.destroy()
   def dashboard_ui(self):
     self.destroy()
+    self.lable_frame=ui.Frame(self.home)
+    self.lable_frame.place(relx=0.5,rely=0.5,anchor="center")
+    self.lable_frame.config(width=500,height=500,bg="blue")
     self.lbl=ui.Label(self.lable_frame,text="welcome to Dashboard")
-    self.lbl.place(relx=0.5,rely=0.5)
+    self.lbl.place(relx=0.5,rely=0.5,anchor="center")
   def inventory_ui(self):
     self.destroy()
+    self.lable_frame=ui.Frame(self.home)
+    self.lable_frame.place(relx=0.5,rely=0.5,anchor="center")
+    self.lable_frame.config(width=500,height=500,bg="blue")
     self.lbl=ui.Label(self.lable_frame,text="welcome to Inventory")
-    self.lbl.place(relx=0.5,rely=0.5)
+    self.lbl.place(relx=0.5,rely=0.5,anchor="center")
   def sales_ui(self):
     self.destroy()
+    self.lable_frame=ui.Frame(self.home)
+    self.lable_frame.place(relx=0.5,rely=0.5,anchor="center")
+    self.lable_frame.config(width=500,height=500,bg="blue")
     self.lbl=ui.Label(self.lable_frame,text="welcome to Sales")
-    self.lbl.place(relx=0.5,rely=0.5)
+    self.lbl.place(relx=0.5,rely=0.5,anchor="center")
   def purchases_ui(self):
     self.destroy()
+    self.lable_frame=ui.Frame(self.home)
+    self.lable_frame.place(relx=0.5,rely=0.5,anchor="center")
+    self.lable_frame.config(width=500,height=500,bg="blue")
     self.lbl=ui.Label(self.lable_frame,text="welcome to Purchases")
-    self.lbl.place(relx=0.5,rely=0.5)
+    self.lbl.place(relx=0.5,rely=0.5,anchor="center")
   def demand_ui(self):
     self.destroy()
+    self.lable_frame=ui.Frame(self.home)
+    self.lable_frame.place(relx=0.5,rely=0.5,anchor="center")
+    self.lable_frame.config(width=500,height=500,bg="blue")
     self.lbl=ui.Label(self.lable_frame,text="welcome to Demand")
-    self.lbl.place(relx=0.5,rely=0.5)
+    self.lbl.place(relx=0.5,rely=0.5,anchor="center")
   
       
     
