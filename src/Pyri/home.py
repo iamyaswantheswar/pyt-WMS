@@ -6,8 +6,6 @@ class cmds:
   def __init__(self, home):
     self.home = home
     self.lable_frame = ui.Frame(self.home)
-    self.lable_frame.place(relx=0.5, rely=0.5, anchor="center")
-    self.lable_frame.config(width=500, height=500, bg="red")
 
   def destroy(self):
     self.lable_frame.destroy()
@@ -16,7 +14,7 @@ class cmds:
     self.destroy()
     self.lable_frame = ui.Frame(self.home)
     self.lable_frame.pack(side="top", fill="both", expand=True)
-    self.lable_frame.config(width=500, height=500, bg="red")
+    self.lable_frame.config(bg="red")
     self.lbl = ui.Label(self.lable_frame, text="welcome to Dashboard")
     self.lbl.place(relx=0.5, rely=0.5, anchor="center")
     self.lbl.config(bg="black")
