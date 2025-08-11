@@ -1,97 +1,92 @@
 import tkinter as ui
 
-
 class cmds:
+    def __init__(self, home):
+        self.home = home
+        self.lable_frame = None
+        self.dashboard_ui()
 
-  def __init__(self, home):
-    self.home = home
-    self.lable_frame = ui.Frame(self.home)
+    def dest(self):
+        if self.lable_frame is not None:
+            self.lable_frame.destroy()
 
-  def destroy(self):
-    self.lable_frame.destroy()
+    def dashboard_ui(self):
+        self.dest()
+        self.lable_frame = ui.Frame(self.home, bg="red")
+        self.lable_frame.pack(side="top", fill="both", expand=True)
+        lbl = ui.Label(self.lable_frame, text="welcome to Dashboard", bg="black", fg="white")
+        lbl.place(relx=0.1, rely=0.5, anchor="w")
 
-  def dashboard_ui(self):
-    self.destroy()
-    self.lable_frame = ui.Frame(self.home)
-    self.lable_frame.pack(side="top", fill="both", expand=True)
-    self.lable_frame.config(bg="red")
-    self.lbl = ui.Label(self.lable_frame, text="welcome to Dashboard")
-    self.lbl.place(relx=0.5, rely=0.5, anchor="center")
-    self.lbl.config(bg="black")
+    def inventory_ui(self):
+        self.dest()
+        self.lable_frame = ui.Frame(self.home, width=500, height=700, bg="green")
+        self.lable_frame.place(relx=0.5, rely=0.5, anchor="center")
+        lbl = ui.Label(self.lable_frame, text="welcome to Inventory")
+        lbl.place(relx=0.9, rely=0.5, anchor="e")
 
-  def inventory_ui(self):
-    self.destroy()
-    self.lable_frame = ui.Frame(self.home)
-    self.lable_frame.place(relx=0.5, rely=0.5, anchor="center")
-    self.lable_frame.config(width=500, height=500, bg="green")
-    self.lbl = ui.Label(self.lable_frame, text="welcome to Inventory")
-    self.lbl.place(relx=0.5, rely=0.5, anchor="center")
+    def sales_ui(self):
+        self.dest()
+        self.lable_frame = ui.Frame(self.home, width=200, height=500, bg="blue")
+        self.lable_frame.place(relx=0.5, rely=0.5, anchor="center")
+        lbl = ui.Label(self.lable_frame, text="welcome to Sales")
+        lbl.place(relx=0.5, rely=0.9, anchor="center")
 
-  def sales_ui(self):
-    self.destroy()
-    self.lable_frame = ui.Frame(self.home)
-    self.lable_frame.place(relx=0.5, rely=0.5, anchor="center")
-    self.lable_frame.config(width=500, height=500, bg="blue")
-    self.lbl = ui.Label(self.lable_frame, text="welcome to Sales")
-    self.lbl.place(relx=0.5, rely=0.5, anchor="center")
+    def purchases_ui(self):
+        self.dest()
+        self.lable_frame = ui.Frame(self.home, width=500, height=500, bg="blue")
+        self.lable_frame.place(relx=0.5, rely=0.5, anchor="center")
+        lbl = ui.Label(self.lable_frame, text="welcome to Purchases")
+        lbl.place(relx=0.5, rely=0.5, anchor="center")
 
-  def purchases_ui(self):
-    self.destroy()
-    self.lable_frame = ui.Frame(self.home)
-    self.lable_frame.place(relx=0.5, rely=0.5, anchor="center")
-    self.lable_frame.config(width=500, height=500, bg="blue")
-    self.lbl = ui.Label(self.lable_frame, text="welcome to Purchases")
-    self.lbl.place(relx=0.5, rely=0.5, anchor="center")
+    def demand_ui(self):
+        self.dest()
+        self.lable_frame = ui.Frame(self.home, width=500, height=500, bg="blue")
+        self.lable_frame.place(relx=0.5, rely=0.5, anchor="center")
+        lbl = ui.Label(self.lable_frame, text="welcome to Demand")
+        lbl.place(relx=0.5, rely=0.5, anchor="center")
 
-  def demand_ui(self):
-    self.destroy()
-    self.lable_frame = ui.Frame(self.home)
-    self.lable_frame.place(relx=0.5, rely=0.5, anchor="center")
-    self.lable_frame.config(width=500, height=500, bg="blue")
-    self.lbl = ui.Label(self.lable_frame, text="welcome to Demand")
-    self.lbl.place(relx=0.5, rely=0.5, anchor="center")
-
-  def createcmd(self, name):
-    func = getattr(self, name.lower() + "_ui")
-    if callable(func):
-      func()
+    def createcmd(self, name):
+        func = getattr(self, name.lower() + "_ui", None)
+        if callable(func):
+            func()
 
 
-class topbarelements(cmds):
+class topbarelements:
+    def __init__(self, label, topbar, command):
+        self.button = ui.Button(topbar,
+                                text=label,
+                                bg="black",
+                                fg="white",
+                                bd=0,
+                                font=("Times", 10, "bold"),
+                                anchor="w",
+                                command=command)
+        self.button.config(width=10, height=2, borderwidth=0, highlightthickness=0)
+        self.button.bind("<Enter>", lambda e: self.button.config(bg="white", fg="black"))
+        self.button.bind("<Leave>", lambda e: self.button.config(bg="black", fg="white"))
 
-  def __init__(self, name, topbar, home):
-    super().__init__(home)
-    self.name = name
-    self.name = ui.Button(topbar,
-                          text=name,
-                          bg="black",
-                          fg="white",
-                          bd=0,
-                          font=("Times", 10, "bold"),
-                          anchor="w",
-                          command=lambda: self.createcmd(name))
-    self.name.config(width=10, height=2, borderwidth=0, highlightthickness=0)
-    self.name.bind("<Enter>",
-                   lambda event: self.name.config(bg="white", fg="black"))
-    self.name.bind("<Leave>",
-                   lambda event: self.name.config(bg="black", fg="white"))
-
-  def place(self, x, y):
-    self.name.place(relx=x, rely=y)
+    def place(self, x, y):
+        self.button.place(relx=x, rely=y)
 
 
+# Main window
 home = ui.Tk()
-h = cmds(home)
 home.title("Home")
 home.attributes("-fullscreen", True)
+
 topbar = ui.Frame(home, bg="black", height=50)
 topbar.pack(side="top", fill="x")
 topbar.pack_propagate(False)
+
+# One instance to control all pages
+controller = cmds(home)
+
+# Create buttons
 elementpos = 0.07
-top = ["Dashboard", "Inventory", "Sales", "Purchases", "Demand"]
-for i in top:
-  y = len(top[1 - top.index(i)])
-  i = topbarelements(i, topbar, home)
-  i.place(elementpos, 0.05)
-  elementpos += 0.15
+pages = ["Dashboard", "Inventory", "Sales", "Purchases", "Demand"]
+for page in pages:
+    btn = topbarelements(page, topbar, lambda p=page: controller.createcmd(p))
+    btn.place(elementpos, 0.05)
+    elementpos += 0.15
+
 home.mainloop()
