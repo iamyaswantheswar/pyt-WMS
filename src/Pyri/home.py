@@ -1,10 +1,18 @@
 import tkinter as ui
+import sys
+from pathlib import Path
+#sys.path.append("full/path/to/project")
+from page_elements.purchases import *
+from page_elements.dashboard import *
+from page_elements.inventory import *
+from page_elements.demand import *
+from page_elements.sales import *
 
-class cmds:
+class cmds():
     def __init__(self, home):
         self.home = home
         self.lable_frame = None
-        self.dashboard_ui()
+        #self.dashboard_ui()
 
     def dest(self):
         if self.lable_frame is not None:
@@ -15,40 +23,36 @@ class cmds:
         print("user entered dashboard")
         self.lable_frame = ui.Frame(self.home, bg="red")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        lbl = ui.Label(self.lable_frame, text="welcome to Dashboard")
-        lbl.place(relx=0.5, rely=0.5, anchor="center")
+        dashboard_elements.dashboard_ele(self,self.lable_frame)
+        
 
     def inventory_ui(self):
         self.dest()
         print("user entered inventory")
         self.lable_frame = ui.Frame(self.home,bg="green")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        lbl = ui.Label(self.lable_frame, text="welcome to Inventory")
-        lbl.place(relx=0.5, rely=0.5, anchor="center")
+        inventory_elements.inventory_ele(self,self.lable_frame)
 
     def sales_ui(self):
         self.dest()
         print("user entered sales")
         self.lable_frame = ui.Frame(self.home,bg="blue")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        lbl = ui.Label(self.lable_frame, text="welcome to Sales")
-        lbl.place(relx=0.5, rely=0.5, anchor="center")
+        sales_elements.sales_ele(self,self.lable_frame)
 
     def purchases_ui(self):
         self.dest()
         print("user entered purchases")
         self.lable_frame = ui.Frame(self.home,bg="lightblue")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        lbl = ui.Label(self.lable_frame, text="welcome to Purchases")
-        lbl.place(relx=0.5, rely=0.5, anchor="center")
+        purchases_elements.purchases_ele(self,self.lable_frame)
 
     def demand_ui(self):
         self.dest()
         print("user entered demand")
         self.lable_frame = ui.Frame(self.home,bg="lightgreen")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        lbl = ui.Label(self.lable_frame, text="welcome to Demand")
-        lbl.place(relx=0.5, rely=0.5, anchor="center")
+        demand_elements.demand_ele(self,self.lable_frame)
 
     def createcmd(self, name):
         func = getattr(self, name.lower() + "_ui", None)
