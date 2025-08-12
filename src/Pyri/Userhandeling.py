@@ -36,7 +36,8 @@ def add_user(username, passwd):
                 data["users"].append({"username":username, "password": passwd})
                 g.seek(0)  # Go back to beginning of file
                 json.dump(data, g)
-                g.truncate()  # Remove any leftover content
+                g.truncate()# Remove any leftover content
+                
 def remove_user(username):
     file_path = base_path / "data" / "users.json"
     with open(file_path, "r+") as f:

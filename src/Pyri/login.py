@@ -45,14 +45,19 @@ def Check_admin():
 def add_user(i=None,b=None):
 
     def match_passwd():
-        if passwd.get() == passwd2.get():
+        if passwd.get() == passwd2.get()and uh.user_check(username.get()):
             uh.add_user(username.get(), passwd.get())
             messagebox.showinfo("Success", "User added successfully")
             a.destroy()
         else:
-            messagebox.showerror("Error", "Passwords do not match")
-            a.destroy()
-            add_user()
+            if passwd.get() != passwd2.get():
+                messagebox.showerror("Error", "Passwords do not match")
+                a.destroy()
+                add_user()
+            if not uh.user_check(username.get()):
+                messagebox.showerror("Error", "user alredy exist")
+                a.destroy()
+                add_user()
 
     if Check_admin():
         print("Admin logged in to add user")
