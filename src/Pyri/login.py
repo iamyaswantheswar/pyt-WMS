@@ -5,6 +5,7 @@ from cryptography.fernet import Fernet
 import Userhandeling as uh
 import subprocess
 import sys
+from PIL import Image,ImageTk
 # Get the path to the current script
 base_path = Path(__file__).parent.parent.parent
 
@@ -151,11 +152,11 @@ login.title("Login")
 
 login.attributes("-fullscreen", True)
 login.geometry("400x400")
-
-bg = ui.PhotoImage(file="C:/Users/vasanth/Desktop/pyt-WMS/src/images/Screenshot 2025-05-01 225259.png")  # Use your image file path here
+image=Image.open(base_path / "src" / "images" / "backgrounds" / "login_bg.jpg")
+bg_login = ImageTk.PhotoImage(image)  # Use your image file path here
 canvas = ui.Canvas(login, width=400, height=400)
 canvas.pack(fill="both", expand=True)
-canvas.create_image(0, 0, image=bg, anchor="nw")
+canvas.create_image(0, 0, image=bg_login, anchor="nw")
 #menu bar
 
 menu = ui.Menu(login)
