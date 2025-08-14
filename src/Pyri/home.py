@@ -8,6 +8,16 @@ from page_elements.inventory import *
 from page_elements.demand import *
 from page_elements.sales import *
 
+def minimize_window():
+    home.iconify()
+
+def maximize_restore_window():
+    # Toggle fullscreen (simplest way in portable apps)
+    home.attributes("-fullscreen", not home.attributes("-fullscreen"))
+
+def close_window():
+    home.destroy()
+    
 class cmds():
     def __init__(self, home):
         self.home = home
@@ -90,5 +100,20 @@ for page in pages:
     btn = topbarelements(page, topbar, lambda p=page: controller.createcmd(p))
     btn.place(elementpos, 0.05)
     elementpos += 0.15
+
+
+# ... existing code for navigation buttons ...
+
+# Custom window controls (place on right)
+btn_close = ui.Button(topbar, text="✕", command=close_window, bg='red', fg='white', bd=0, padx=10)
+btn_minimize = ui.Button(topbar, text="🗕", command=minimize_window, bg='black', fg='white', bd=0, padx=10)
+btn_maximize = ui.Button(topbar, text="🗖", command=maximize_restore_window, bg='black', fg='white', bd=0, padx=10)
+
+# Place them right-aligned
+btn_close.pack(side='right', padx=4, pady=5)
+btn_maximize.pack(side='right', padx=4, pady=5)
+btn_minimize.pack(side='right', padx=4, pady=5)
+
+
 
 home.mainloop()
