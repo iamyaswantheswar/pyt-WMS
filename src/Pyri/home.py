@@ -45,7 +45,7 @@ class cmds():
         print("user entered purchases")
         self.lable_frame = ui.Frame(self.home,bg="lightblue")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        purchases_elements.purchases_ele(self,self.lable_frame)
+        purchases_elements.purchases_ele(self,self.lable_frame,self.home)
 
     def demand_ui(self):
         self.dest()

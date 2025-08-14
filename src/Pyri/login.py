@@ -148,9 +148,14 @@ def update_user():
 #login window
 login = ui.Tk()
 login.title("Login")
-login.attributes("-fullscreen", True)
-login.configure(bg="white")
 
+login.attributes("-fullscreen", True)
+login.geometry("400x400")
+
+bg = ui.PhotoImage(file="C:/Users/vasanth/Desktop/pyt-WMS/src/images/Screenshot 2025-05-01 225259.png")  # Use your image file path here
+canvas = ui.Canvas(login, width=400, height=400)
+canvas.pack(fill="both", expand=True)
+canvas.create_image(0, 0, image=bg, anchor="nw")
 #menu bar
 
 menu = ui.Menu(login)
