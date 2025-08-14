@@ -8,7 +8,15 @@ import sys
 from PIL import Image,ImageTk
 # Get the path to the current script
 base_path = Path(__file__).parent.parent.parent
+def minimize_window():
+    login.iconify()
 
+def maximize_restore_window():
+    # Toggle fullscreen
+    login.attributes("-fullscreen", not login.attributes("-fullscreen"))
+
+def close_window():
+    login.destroy()
 ##functions
 def Check_admin():
     isadmin = False
@@ -150,6 +158,11 @@ def update_user():
 login = ui.Tk()
 login.title("Login")
 
+
+topbar = ui.Frame(login, bg="white", height=40)
+topbar.pack(side="top", fill="x")
+topbar.pack_propagate(False)
+
 login.attributes("-fullscreen", True)
 login.geometry("400x400")
 image=Image.open(base_path / "src" / "images" / "backgrounds" / "login_bg.jpg")
@@ -194,10 +207,21 @@ username_lable = ui.Label(login, text="Enter username", bg="white")
 username_lable.place(relx=0.5, rely=0.4, anchor=ui.CENTER)
 username = ui.Entry(login, width=20, font=("Times", 15), bd=2)
 username.place(relx=0.5, rely=0.45, anchor=ui.CENTER)
+
 passwd_lable = ui.Label(login, text="Enter password", bg="white")
 passwd_lable.place(relx=0.5, rely=0.5, anchor=ui.CENTER)
 passwd = ui.Entry(login, width=20, font=("Times", 15), bd=2, show="*")
 passwd.place(relx=0.5, rely=0.55, anchor=ui.CENTER)
 enter = ui.Button(login, text="Login", command=lambda: auth())
 enter.place(relx=0.5, rely=0.6, anchor=ui.CENTER)
+
+# Window control buttons
+
+
+btn_close = ui.Button(topbar, text="✕", command=close_window, bg='red', fg='white', bd=0, padx=10)
+btn_maximize = ui.Button(topbar, text="🗖", command=maximize_restore_window, bg='black', fg='white', bd=0, padx=10)
+btn_minimize = ui.Button(topbar, text="🗕", command=minimize_window, bg='black', fg='white', bd=0, padx=10)
+btn_close.pack(side='right', padx=2, pady=5)
+btn_maximize.pack(side='right', padx=2, pady=5)
+btn_minimize.pack(side='right', padx=2, pady=5)
 login.mainloop()
