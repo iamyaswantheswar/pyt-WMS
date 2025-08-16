@@ -5,18 +5,10 @@ from cryptography.fernet import Fernet
 import Userhandeling as uh
 import subprocess
 import sys
+import platform
 from PIL import Image,ImageTk
 # Get the path to the current script
 base_path = Path(__file__).parent.parent.parent
-def minimize_window():
-    login.iconify()
-
-def maximize_restore_window():
-    # Toggle fullscreen
-    login.attributes("-fullscreen", not login.attributes("-fullscreen"))
-
-def close_window():
-    login.destroy()
 ##functions
 def Check_admin():
     isadmin = False
@@ -38,12 +30,12 @@ def Check_admin():
     second.grab_set()
     second.focus_set()
     second.configure(bg="white")
-    label = ui.Label(second, text="Enter ADMIN password")
+    label = ui.Label(second, text="Enter ADMIN password",bg="white")
     label.place(relx=0.5, rely=0.3, anchor=ui.CENTER)
     passwd = ui.Entry(second, width=20, font=("Times", 15), bd=2, show="*")
     passwd.place(relx=0.5, rely=0.5, anchor=ui.CENTER)
     enter = ui.Button(second, text="Continue", command=check_passwd)
-    enter.place(relx=0.5, rely=0.7, anchor=ui.CENTER)
+    enter.place(relx=0.5, rely=0.75, anchor=ui.CENTER)
     login.wait_window(second)
     #passwd.bind("<Return>", lambda event:get_passwd)
     if isadmin:
@@ -159,17 +151,13 @@ login = ui.Tk()
 login.title("Login")
 
 
-topbar = ui.Frame(login, bg="white", height=40)
-topbar.pack(side="top", fill="x")
-topbar.pack_propagate(False)
-
-login.attributes("-fullscreen", True)
-login.geometry("400x400")
+#login.attributes("-fullscreen", True)
+#login.geometry("400x400")
 image=Image.open(base_path / "src" / "images" / "backgrounds" / "login_bg.jpg")
 bg_login = ImageTk.PhotoImage(image)  # Use your image file path here
 canvas = ui.Canvas(login, width=400, height=400)
 canvas.pack(fill="both", expand=True)
-canvas.create_image(0, 0, image=bg_login, anchor="nw")
+canvas.create_image(0, 0, image=bg_login,anchor="nw")
 #menu bar
 
 menu = ui.Menu(login)
@@ -179,16 +167,24 @@ menu.add_cascade(label="Administration", menu=Users)
 Users.add_command(label="Add User", command=add_user)
 Users.add_command(label="Remove User", command=lambda: remove_user())
 Users.add_command(label="Update User", command=lambda: update_user())
+login.minsize(800, 600)
+# login bg
+
+# Maximize based on OS
+system = platform.system()
+if system == "Windows":
+    login.state('zoomed')  # This maximizes the window on Windows
+elif system == "Darwin":  # macOS
+    login.attributes('-zoomed', True)  # May work on some versions
+else:
+    # Fallback for Linux
+    login.attributes('-zoomed', True)
+
+
 #Users.add_command(label="List Users", command=lambda: list_user())
 #Exit=ui.Menu(menu,tearoff=0)
 #menu.add_cascade(label="Exit",menu=Exit)
 #Exit.add_command(label="Exit the software ",command=login.destroy)
-
-## heading
-
-header_main = ui.Label(login, text="WareHouse management system", bg="white")
-header_main.config(font=("Times", 30, "bold"))
-header_main.place(relx=0.5, rely=0.1, anchor=ui.CENTER)
 
 #input labels and entry
 def auth():
@@ -201,27 +197,25 @@ def auth():
         
     else:
         messagebox.showerror("Error", "Invalid username or password")
+
+login_frame= ui.Frame(login, bg="white", height=550,width=450,bd=3,highlightbackground="black",highlightthickness=3 )
+login_frame.place(relx=0.5,rely=0.5,anchor=ui.CENTER)
+header_main = ui.Label(login_frame, text="WAREHOUSE MANAGEMENT SYSTEM",bg="white")
+header_main.config(font=("Times", 16, "bold"))
+header_main.place(relx=0.5, rely=0.1, anchor=ui.CENTER)
         
 
-username_lable = ui.Label(login, text="Enter username", bg="white")
+username_lable = ui.Label(login_frame, text="Username", bg="white")
 username_lable.place(relx=0.5, rely=0.4, anchor=ui.CENTER)
-username = ui.Entry(login, width=20, font=("Times", 15), bd=2)
+username = ui.Entry(login_frame, width=20, font=("Times", 15), bd=2)
 username.place(relx=0.5, rely=0.45, anchor=ui.CENTER)
 
-passwd_lable = ui.Label(login, text="Enter password", bg="white")
-passwd_lable.place(relx=0.5, rely=0.5, anchor=ui.CENTER)
-passwd = ui.Entry(login, width=20, font=("Times", 15), bd=2, show="*")
+passwd_lable = ui.Label(login_frame, text="Password", bg="white")
+passwd_lable.place(relx=0.5, rely=0.5, anchor="center")
+passwd = ui.Entry(login_frame, width=20, font=("Times", 15), bd=2, show="*")
 passwd.place(relx=0.5, rely=0.55, anchor=ui.CENTER)
-enter = ui.Button(login, text="Login", command=lambda: auth())
-enter.place(relx=0.5, rely=0.6, anchor=ui.CENTER)
-
-# Window control buttons
+enter = ui.Button(login_frame, text="Login", command=lambda: auth())
+enter.place(relx=0.5, rely=0.65, anchor=ui.CENTER)
 
 
-btn_close = ui.Button(topbar, text="✕", command=close_window, bg='red', fg='white', bd=0, padx=10)
-btn_maximize = ui.Button(topbar, text="🗖", command=maximize_restore_window, bg='black', fg='white', bd=0, padx=10)
-btn_minimize = ui.Button(topbar, text="🗕", command=minimize_window, bg='black', fg='white', bd=0, padx=10)
-btn_close.pack(side='right', padx=2, pady=5)
-btn_maximize.pack(side='right', padx=2, pady=5)
-btn_minimize.pack(side='right', padx=2, pady=5)
 login.mainloop()
