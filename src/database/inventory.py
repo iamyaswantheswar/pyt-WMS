@@ -2,6 +2,9 @@
 # And also the functions for the entities
 # It will be imported by other files in the database.
 import csv
+import shutil
+import datetime
+import os
 from pathlib import Path
 
 base_path = Path(__file__).parent.parent.parent
@@ -18,6 +21,12 @@ class Product:
         self.price = price
         self.locations = locations
 
+    def backup_csv(self):
+        file = base_path / "data" / "database" / "products.csv"
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_name = f"{file.replace('.csv', '')}_{timestamp}.csv"
+        shutil.copy2(file, f"{file.parent}/history/products/{backup_name}")
+
     def new_product(self):
         data = [
             [
@@ -31,6 +40,8 @@ class Product:
                 self.locations
             ]
         ]
+
+        self.backup_csv()
 
         with open(base_path / "data" / "database" / "products.csv", 'a', newline='') as file:
             writer = csv.writer(file)
@@ -52,6 +63,7 @@ class Product:
             self.write_to_csv()
 
     def write_to_csv(self):
+        self.backup_csv()
         with open(base_path / "data" / "database" / "products.csv", mode = 'r', newline='') as file:
             reader = csv.DictReader(file)
             rows = list(reader)
