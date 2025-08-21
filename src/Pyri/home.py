@@ -76,6 +76,7 @@ class topbarelements:
 # Main window
 home = ui.Tk()
 home.title("WAREHOUSE MANAGEMENT SYSTEM")
+home.geometry("700x500")
 #home.attributes("-fullscreen", True)
 # Maximize based on OS
 system = platform.system()
