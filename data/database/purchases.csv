@@ -1,2 +1,4 @@
-Product_id,Product_name,Quantity,price,locations
+Product id,Product name,Quantity,Price,Location,Purchase Date,Expiry Date
 
+223444,colgate,34,89,133kf,22-08-2025
+123334,Toothpaste,32,45,21233,22-08-2025,29-08-2025
