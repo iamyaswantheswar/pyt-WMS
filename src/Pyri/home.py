@@ -2,6 +2,7 @@ import tkinter as ui
 import sys
 from pathlib import Path
 import platform
+from tkinter import messagebox
 
 from page_elements.purchases import *
 from page_elements.dashboard import *
@@ -14,7 +15,8 @@ class cmds():
     def __init__(self, home):
         self.home = home
         self.lable_frame = None
-        #self.dashboard_ui()
+        
+        self.dashboard_ui()
 
     def dest(self):
         if self.lable_frame is not None:
