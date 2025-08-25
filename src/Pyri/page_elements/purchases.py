@@ -20,7 +20,7 @@ class purchases_elements:
             for row in self.reader:
                 if row==[]:
                     continue
-                elif row[-1]==self.current_date:
+                elif row[-2]==self.current_date:
                     self.csv_data.append(row)
                 
         with open(self.purchases_csv_filepath,"w",newline="") as f:
@@ -96,13 +96,15 @@ class purchases_elements:
         with open(self.purchases_csv_filepath,"a+",newline="") as f:
             writer=csv.writer(f)
             self.current_date=datetime.now().strftime("%d-%m-%Y")
-            self.list_purchase=d[0:7]+[self.current_date]
+            self.current_date_time=datetime.now().strftime("%d%m%Y%H%M")
+            self.product_purchase_id=self.uproduct_id+str(self.additional_product_quantity)+self.current_date_time
+            self.list_purchase=d[0:7]+[self.current_date]+[self.product_purchase_id]
             writer.writerow(self.list_purchase)
             
         self.purchaseslog_filepath=base_path / "data" / "database" / "stocklog" / "purchases_log.csv"
         with open(self.purchaseslog_filepath,"a+",newline="") as f:
             writer=csv.writer(f)
-            self.list_purchase=d[0:7]+[self.current_date]
+            self.list_purchase=d[0:7]+[self.current_date]+[self.product_purchase_id]
             writer.writerow(self.list_purchase)
 
         self.tree.destroy()
@@ -270,6 +272,8 @@ class purchases_elements:
         
     
     def get_data_add_product(self,frame,home):
+        self.current_date=datetime.now().strftime("%d%m%Y%H%M")
+
         self.product_name=self.entry_product_name.get()
         self.product_id=self.entry_product_id.get()
         self.product_quantity=self.entry_product_quantity.get()
@@ -282,20 +286,21 @@ class purchases_elements:
         self.product_rack=self.product_racks.get()[-1]
         self.product_shelf=self.product_shelfs.get()[-1]
         self.product_location=self.product_block + self.product_zone + self.product_aisle + self.product_rack + self.product_shelf
-        purchases_elements.write_data_purchases(self,frame,home,self.product_id,self.product_name,self.product_quantity,self.product_cost,self.product_stock_cost,self.product_location,self.product_exp)
+        self.product_purchase_id=self.product_id+str(self.product_quantity)+self.current_date
+        purchases_elements.write_data_purchases(self,frame,home,self.product_id,self.product_name,self.product_quantity,self.product_cost,self.product_stock_cost,self.product_location,self.product_exp,self.product_purchase_id)
 
 
-    def write_data_purchases(self,frame,home,Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate):
+    def write_data_purchases(self,frame,home,Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate,purchaseid):
         self.purchases_csv_filepath= base_path / "data" / "database" / "purchases.csv"
         with open(self.purchases_csv_filepath,"a+",newline="") as f:
             writer=csv.writer(f)
             self.current_date=datetime.now().strftime("%d-%m-%Y")
-            writer.writerow([Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate,self.current_date])
+            writer.writerow([Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate,self.current_date,purchaseid])
         self.purchaseslog_filepath=base_path / "data" / "database" / "stocklog" / "purchases_log.csv"
         with open(self.purchaseslog_filepath,"a+",newline="") as f:
             writer=csv.writer(f)
             self.current_date=datetime.now().strftime("%d-%m-%Y")
-            writer.writerow([Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate,self.current_date])
+            writer.writerow([Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate,self.current_date,purchaseid])
             self.add_product_window.destroy()
         self.inventory_csv_filepath= base_path / "data" / "database" / "inventory.csv"
         with open(self.inventory_csv_filepath,"a+",newline="")as f:
@@ -412,7 +417,15 @@ class purchases_elements:
         #self.split_stock_button.place(relx=0.05,rely=0.9,anchor="w")
 
 
-    
+    ############################################### Modify Purchase #######################################################
+
+
+
+
+
+
+
+    ############################################## View Purchase History ############################################################
                 
             
             
