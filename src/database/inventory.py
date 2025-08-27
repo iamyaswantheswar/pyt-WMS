@@ -11,7 +11,7 @@ base_path = Path(__file__).parent.parent.parent
 
 class Product:
 
-    def __init__(self, id, name, category, price, dimensions, weight, quantity_in_stock, locations):
+    def __init__(self, id, name = '', category = [], price = 0, dimensions = '', weight = 0, quantity_in_stock = 0, locations = [], new = False):
         self.id = id
         self.name = name
         self.category = category
@@ -21,11 +21,28 @@ class Product:
         self.price = price
         self.locations = locations
 
+        with open(base_path / 'data' / 'database' / 'purchases.csv', mode = 'r', newline='') as file:
+            reader = csv.DictReader(file)
+            rows = list(reader)
+            for row in rows:
+                if row["id"] == self.id:
+                    self.id = row["id"]
+                    self.name = row["name"]
+                    self.category = row["category"]
+                    self.dimensions = row["dimensions"]
+                    self.weight = row["weight"]
+                    self.quantity_in_stock = row["quantity_in_stock"]
+                    self.price = row["price"]
+                    self.locations = row["locations"]
+
+        if new:
+            self.new_product()
+
     def backup_csv(self):
-        file = base_path / "data" / "database" / "products.csv"
+        file_path = base_path / "data" / "database" / "products.csv"
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        backup_name = f"{file.replace('.csv', '')}_{timestamp}.csv"
-        shutil.copy2(file, f"{file.parent}/history/products/{backup_name}")
+        backup_name = f"{file_path.stem}_{timestamp}.csv"
+        shutil.copy2(file_path, f"{file_path.parent}/history/products/{backup_name}")
 
     def new_product(self):
         data = [
