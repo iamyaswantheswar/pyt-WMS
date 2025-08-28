@@ -5,7 +5,9 @@ from tkinter import ttk
 import csv
 from datetime import datetime
 from tkinter import messagebox
-import database
+from database.PurchaseDH import PurchasesDataHandler
+
+
 
 base_path = Path(__file__).parent.parent.parent.parent
 
@@ -42,6 +44,7 @@ class purchases_elements:
         self.csv_data=purchases_elements.open_purchases_csv(self)
         purchases_elements.display_csv(self,frame,self.csv_data,0,1)
         purchases_elements.refresh_csv(self,frame,home)
+        
 
 
     def display_csv(self,frame,data,row,column,colspan=1):
@@ -141,7 +144,15 @@ class purchases_elements:
                     elif i[0]==self.entry_uproduct_id.get():
                         self.existing_stock=int(i[2])
                         self.unit_price=int(i[3])
-                        purchases_elements.get_data_add_stock(self,frame,home,self.existing_stock,self.unit_price)
+                        self.uproduct_id=self.entry_uproduct_id.get()
+                        self.additional_product_quantity=int(self.entry_uproduct_quantity.get())
+                        self.product_final_quantity=self.additional_product_quantity + self.existing_stock
+                        self.product_final_stockvalue=self.product_final_quantity * self.unit_price
+                        #going to backend to write data
+                        PurchasesDataHandler.Updateproductstock(self,self.uproduct_id,self.existing_stock,self.unit_price,self.additional_product_quantity,self.product_final_quantity,self.product_final_stockvalue)
+                        self.tree.destroy()
+                        self.csv_data=purchases_elements.open_purchases_csv(self)
+                        purchases_elements.display_csv(self,frame,self.csv_data,0,1)
                         self.add_stock_window.destroy()
                         break
                     
@@ -288,36 +299,11 @@ class purchases_elements:
         self.product_shelf=self.product_shelfs.get()[-1]
         self.product_location=self.product_block + self.product_zone + self.product_aisle + self.product_rack + self.product_shelf
         self.product_purchase_id=self.product_id+str(self.product_quantity)+self.current_date
-        purchases_elements.write_data_purchases(self,frame,home,self.product_id,self.product_name,self.product_quantity,self.product_cost,self.product_stock_cost,self.product_location,self.product_exp,self.product_purchase_id)
-
-
-    def write_data_purchases(self,frame,home,Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate,purchaseid):
-        self.purchases_csv_filepath= base_path / "data" / "database" / "purchases.csv"
-        with open(self.purchases_csv_filepath,"a+",newline="") as f:
-            writer=csv.writer(f)
-            self.current_date=datetime.now().strftime("%d-%m-%Y")
-            writer.writerow([Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate,self.current_date,purchaseid])
-        self.purchaseslog_filepath=base_path / "data" / "database" / "stocklog" / "purchases_log.csv"
-        with open(self.purchaseslog_filepath,"a+",newline="") as f:
-            writer=csv.writer(f)
-            self.current_date=datetime.now().strftime("%d-%m-%Y")
-            writer.writerow([Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate,self.current_date,purchaseid])
-            self.add_product_window.destroy()
-        self.inventory_csv_filepath= base_path / "data" / "database" / "inventory.csv"
-        with open(self.inventory_csv_filepath,"a+",newline="")as f:
-            writer=csv.writer(f)
-            self.current_date=datetime.now().strftime("%d-%m-%Y")
-            writer.writerow([Product_id,Product_name,Quantity,cost,Stockvalue,location,expirydate])
-            
+        #going to backend to write data
+        PurchasesDataHandler.Writenewproductdata(self,self.product_id,self.product_name,self.product_quantity,self.product_cost,self.product_stock_cost,self.product_location,self.product_exp,self.product_purchase_id)
         self.tree.destroy()
         self.csv_data=purchases_elements.open_purchases_csv(self)
         purchases_elements.display_csv(self,frame,self.csv_data,0,1)
-
-
-        
-
-        
-        
 
     def open_calendar(self,home):
         self.cal_window=ui.Toplevel(home)
