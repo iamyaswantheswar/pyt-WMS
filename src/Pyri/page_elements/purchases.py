@@ -44,8 +44,14 @@ class purchases_elements:
         self.modify_purchase_button=ui.Button(frame,text="Modify Purchase ",command = lambda : purchases_elements.modify_purchase(self,home,frame),width=30,font=("Arial",10,"bold"))
         self.modify_purchase_button.place(relx=0.02,rely=0.45)
         
+        self.delete_purchase_button=ui.Button(frame,text="Delete Purchase ",command = lambda : purchases_elements.delete_purchase(self,home,frame),width=30,font=("Arial",10,"bold"))
+        self.delete_purchase_button.place(relx=0.02,rely=0.65)
+        
+        
         self.view_history_button=ui.Button(frame,text="View Purchase history ",command = lambda : purchases_elements.view_purchase_history(self,home),width=30,font=("Arial",10,"bold"))
-        self.view_history_button.place(relx=0.02,rely=0.65)
+        self.view_history_button.place(relx=0.02,rely=0.85)
+
+        
         
         purchases_elements.refresh_csv(self,frame,home)
         self.csv_data=purchases_elements.open_purchases_csv(self)
@@ -507,13 +513,95 @@ class purchases_elements:
                 self.mproduct_window.destroy()
                 purchases_elements.modify_purchasedata_window(self,home,purchaseid)
                 return
+            #Goes to back end
             PurchasesDataHandler.modify_quantity(self,purchaseid,mquantity,product_id)
             self.tree.destroy()
             self.csv_data=purchases_elements.open_purchases_csv(self)
             purchases_elements.display_csv(self,frame,self.csv_data,0,1)
             self.mproduct_window.destroy()
+######################################################## Delete Purchase ###################################################################
+    def delete_purchase(self,home,frame):
+        self.delete_purchase_window=ui.Toplevel(home)
+        self.delete_purchase_window.title("Delete Purchase Record")
+        self.delete_purchase_window.configure(bg="white")
+        self.delete_purchase_window.geometry("700x150")
+
+        self.label_dproduct_id = ui.Label(self.delete_purchase_window, text="Product ID",bg="white",font=('Arial',10))
+        self.label_dproduct_id.place(relx=0.05,rely=0.2,anchor="w")
+
+        self.entry_dproduct_id=ui.Entry(self.delete_purchase_window, width=40,bd=2,font=('Arial',13))
+        self.entry_dproduct_id.place(relx=0.05, rely=0.5, anchor='w')
+
+        self.confirm_button=ui.Button(self.delete_purchase_window,text="CONFIRM", command = lambda : purchases_elements.get_dpurchase_ids(self,home,frame,self.entry_dproduct_id.get()),bg="white",width= 25,font=("Arial",10,"bold"))
+        self.confirm_button.place(relx=0.5, rely=0.8, anchor="center")
+    def get_dpurchase_ids(self,home,frame,product_id):
+        if product_id == "":
+            messagebox.showerror("Empty id","Product id  can't be empty.")
+            self.delete_purchase_window.destroy()
+            purchases_elements.delete_purchase(self,home,frame)
+        else:
+            self.delete_purchase_window.destroy()
+            self.purchases_csv_filepath= base_path / "data" / "database" / "purchases.csv"
+            with open(self.purchases_csv_filepath,"r",newline="")as file:
+                self.reader=csv.DictReader(file)
+                self.purchase_ids=[]
+                for i in self.reader:
+                    if i["Product id"] == product_id:
+                        self.purchase_ids.append(i["Purchase Id"])
+                if self.purchase_ids==[]:
+                    messagebox.showerror("Invalid id","Product id doesnt exist")
+                    self.delete_purchase_window.destroy()
+                    purchases_elements.delete_purchase(self,home,frame)
+                else:
+                    self.delete_purchase_window.destroy()
+                    purchases_elements.delete_purchase_choose_pruchaseid(self,home,frame,self.purchase_ids,product_id)
+                    
+    def delete_purchase_choose_pruchaseid(self,home,frame,purchaseids,product_id):
+        self.delete_ids_window=ui.Toplevel(home)
+        self.delete_ids_window.title("Choose purchase id to delete")
+        self.delete_ids_window.configure(bg="white")
+        self.delete_ids_window.geometry("500x200")
+        
+        self.label_mproduct_ids= ui.Label(self.delete_ids_window, text="Choose Purchase id",bg="white",font=('Arial',10))
+        self.label_mproduct_ids.place(relx=0.05,rely=0.2,anchor="w")
+        
+        self.purchases_ids=purchaseids
+        self.product_purchase_ids=ui.StringVar(value="Select Purchaseid")
+        self.option_product_purchase_ids=ui.OptionMenu(self.delete_ids_window,self.product_purchase_ids,*self.purchases_ids)
+        self.option_product_purchase_ids.place(relx=0.05,rely=0.4,anchor="w")
+        self.option_product_purchase_ids.configure(bg="white")
+
+        
+        self.confirm_button=ui.Button(self.delete_ids_window,text="CONFIRM", command = lambda : purchases_elements.confirm_purchase_data_deletion(self,home,frame,self.product_purchase_ids.get(),product_id),bg="white",width= 25,font=("Arial",10,"bold"))
+        self.confirm_button.place(relx=0.5, rely=0.8, anchor="center")
+        
+    def confirm_purchase_data_deletion(self,home,frame,purchaseid,product_id):
+        try:
+            q=int(purchaseid)
             
-                
+        except:
+            messagebox.showerror("Invalid selection","Please select Purchase ID before pressing Confirm")
+            self.modify_ids_window.destroy()
+            purchases_elements.get_dpurchase_ids(self,home,frame,product_id)
+            return
+        self.response = messagebox.askyesno("Warning","Do you really  want to delete this purchase transation")
+        if self.response==True:
+            self.delete_ids_window.destroy()
+            #goes to backend
+            PurchasesDataHandler.delete_purchase(self,purchaseid,product_id)
+            self.tree.destroy()
+            self.csv_data=purchases_elements.open_purchases_csv(self)
+            purchases_elements.display_csv(self,frame,self.csv_data,0,1)
+            self.delete_ids_window.destroy()
+            
+        else:
+            self.delete_ids_window.destroy()
+                        
+
+        
+        
+
+
                 
 
 ########################################################## View Purchase History ############################################################
