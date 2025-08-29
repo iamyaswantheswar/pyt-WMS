@@ -513,12 +513,22 @@ class purchases_elements:
                 self.mproduct_window.destroy()
                 purchases_elements.modify_purchasedata_window(self,home,purchaseid)
                 return
-            #Goes to back end
-            PurchasesDataHandler.modify_quantity(self,purchaseid,mquantity,product_id)
-            self.tree.destroy()
-            self.csv_data=purchases_elements.open_purchases_csv(self)
-            purchases_elements.display_csv(self,frame,self.csv_data,0,1)
-            self.mproduct_window.destroy()
+            if int(mquantity) == 0:
+                self.response = messagebox.askyesno("Warning","Do you really  want to delete this purchase transation")
+                if self.response==True:
+                    #goes to backend
+                    PurchasesDataHandler.delete_purchase(self,purchaseid,product_id)
+                    self.tree.destroy()
+                    self.csv_data=purchases_elements.open_purchases_csv(self)
+                    purchases_elements.display_csv(self,frame,self.csv_data,0,1)
+                    self.mproduct_window.destroy()
+            else:
+                #goes to backend
+                PurchasesDataHandler.modify_quantity(self,purchaseid,mquantity,product_id)
+                self.tree.destroy()
+                self.csv_data=purchases_elements.open_purchases_csv(self)
+                purchases_elements.display_csv(self,frame,self.csv_data,0,1)
+                self.mproduct_window.destroy()
 ######################################################## Delete Purchase ###################################################################
     def delete_purchase(self,home,frame):
         self.delete_purchase_window=ui.Toplevel(home)
