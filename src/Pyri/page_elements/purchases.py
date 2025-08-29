@@ -40,6 +40,8 @@ class purchases_elements:
         self.add_product_button.place(relx=0.02,rely=0.05)
         self.stock_existing_product_button=ui.Button(frame,text="Add stock ",command = lambda : purchases_elements.add_stock(self,home,frame),width=30,font=("Arial",10,"bold"))
         self.stock_existing_product_button.place(relx=0.02,rely=0.2)
+        self.stock_existing_product_button=ui.Button(frame,text="Modify Purchase ",command = lambda : purchases_elements.modify_purchase(self,home,frame),width=30,font=("Arial",10,"bold"))
+        self.stock_existing_product_button.place(relx=0.02,rely=0.3)
         purchases_elements.refresh_csv(self,frame,home)
         self.csv_data=purchases_elements.open_purchases_csv(self)
         purchases_elements.display_csv(self,frame,self.csv_data,0,1)
@@ -404,15 +406,118 @@ class purchases_elements:
         #self.split_stock_button.place(relx=0.05,rely=0.9,anchor="w")
 
 
-    ############################################### Modify Purchase #######################################################
+#################################################################################### Modify Purchase #######################################################
 
+    def modify_purchase(self,home,frame):
+        self.modify_purchase_window=ui.Toplevel(home)
+        self.modify_purchase_window.title("Modify purchase")
+        self.modify_purchase_window.configure(bg="white")
+        self.modify_purchase_window.geometry("500x150")
+        
+                
+        self.label_mproduct_id = ui.Label(self.modify_purchase_window, text="Product ID",bg="white",font=('Arial',10))
+        self.label_mproduct_id.place(relx=0.05,rely=0.2,anchor="w")
 
+        self.entry_mproduct_id=ui.Entry(self.modify_purchase_window, width=40,bd=2,font=('Arial',13))
+        self.entry_mproduct_id.place(relx=0.05, rely=0.5, anchor='w')
 
+        self.confirm_button=ui.Button(self.modify_purchase_window,text="CONFIRM", command = lambda : purchases_elements.get_purchase_ids(self,home,frame,self.entry_mproduct_id.get()),bg="white",width= 25,font=("Arial",10,"bold"))
+        self.confirm_button.place(relx=0.5, rely=0.8, anchor="center")
 
+    
+        
+    def get_purchase_ids(self,home,frame,product_id):
+        if product_id == "":
+            messagebox.showerror("Empty id","Product id  can't be empty.")
+            self.modify_purchase_window.destroy()
+            purchases_elements.modify_purchase(self,home,frame)
+        else:
+            self.modify_purchase_window.destroy()
+            self.purchases_csv_filepath= base_path / "data" / "database" / "purchases.csv"
+            with open(self.purchases_csv_filepath,"r",newline="")as file:
+                self.reader=csv.DictReader(file)
+                self.purchase_ids=[]
+                for i in self.reader:
+                    if i["Product id"] == product_id:
+                        self.purchase_ids.append(i["Purchase Id"])
+                if self.purchase_ids==[]:
+                    messagebox.showerror("Invalid id","Product id doesnt exist")
+                    self.modify_purchase_window.destroy()
+                    purchases_elements.modify_purchase(self,home,frame)
+                else:
+                    self.modify_purchase_window.destroy()
+                    purchases_elements.modify_purchase_choose_pruchaseid(self,home,frame,self.purchase_ids,product_id)
+                    
+    def modify_purchase_choose_pruchaseid(self,home,frame,purchaseids,product_id):
+        self.modify_ids_window=ui.Toplevel(home)
+        self.modify_ids_window.title("Choose purchase id to modify")
+        self.modify_ids_window.configure(bg="white")
+        self.modify_ids_window.geometry("500x200")
+        
+        self.label_mproduct_ids= ui.Label(self.modify_ids_window, text="Choose Purchase id",bg="white",font=('Arial',10))
+        self.label_mproduct_ids.place(relx=0.05,rely=0.2,anchor="w")
+        
+        self.purchases_ids=purchaseids
+        self.product_purchase_ids=ui.StringVar(value="Select Purchaseid")
+        self.option_product_purchase_ids=ui.OptionMenu(self.modify_ids_window,self.product_purchase_ids,*self.purchases_ids)
+        self.option_product_purchase_ids.place(relx=0.05,rely=0.4,anchor="w")
+        self.option_product_purchase_ids.configure(bg="white")
 
+        
+        self.confirm_button=ui.Button(self.modify_ids_window,text="CONFIRM", command = lambda : purchases_elements.modify_purchasedata_window(self,home,frame,self.product_purchase_ids.get(),product_id),bg="white",width= 25,font=("Arial",10,"bold"))
+        self.confirm_button.place(relx=0.5, rely=0.8, anchor="center")
  
+    def modify_purchasedata_window(self,home,frame,purchaseid,product_id):
+        try:
+            q=int(purchaseid)
+            self.modify_ids_window.destroy()
+            self.mproduct_window=ui.Toplevel(home)
+            self.mproduct_window.title("Modify Quantity")
+            self.mproduct_window.configure(bg="white")
+            self.mproduct_window.geometry("500x200")
+                    
+            self.label_mproduct_quantity = ui.Label(self.mproduct_window, text="New Product Quantity",bg="white",font=('Arial',10))
+            self.label_mproduct_quantity.place(relx=0.05,rely=0.35,anchor="w")
 
-    ############################################## View Purchase History ############################################################
+            self.entry_mproduct_quantity=ui.Entry(self.mproduct_window, width=40,bd=2,font=('Arial',13))
+            self.entry_mproduct_quantity.place(relx=0.05, rely=0.45, anchor='w')
+            
+            
+            self.confirm_button=ui.Button(self.mproduct_window,text="CONFIRM", command = lambda : purchases_elements.write_mdata(self,home,frame,purchaseid,self.entry_mproduct_quantity.get(),product_id),bg="white",width= 25,font=("Arial",10,"bold"))
+            self.confirm_button.place(relx=0.5, rely=0.8, anchor="center")
+        except:
+            messagebox.showerror("Invalid selection","Please select Purchase ID before pressing Confirm")
+            self.modify_ids_window.destroy()
+            purchases_elements.get_purchase_ids(self,home,frame,product_id)
+            
+            
+    def write_mdata(self,home,frame,purchaseid,mquantity,product_id):
+        if mquantity == "":
+            messagebox.showerror("Empty entry","New quantity cant be empty")
+        else:
+            try:
+                q=int(mquantity)
+            except:
+                messagebox.showerror("Invalid entry","Invalid data type")
+                self.mproduct_window.destroy()
+                purchases_elements.modify_purchasedata_window(self,home,purchaseid)
+                return
+            PurchasesDataHandler.modify_quantity(self,purchaseid,mquantity,product_id)
+            self.tree.destroy()
+            self.csv_data=purchases_elements.open_purchases_csv(self)
+            purchases_elements.display_csv(self,frame,self.csv_data,0,1)
+            self.mproduct_window.destroy()
+            
+                
+                
+
+
+
+
+
+
+
+########################################################## View Purchase History ############################################################
                 
             
             

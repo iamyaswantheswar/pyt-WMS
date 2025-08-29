@@ -110,4 +110,65 @@ class PurchasesDataHandler:
             self.writer=csv.DictWriter(f,fieldnames=headers)
             self.writer.writerow(row)
 
+    def modify_quantity(self,purchaseid,mquantity,product_id):
+        self.purchases_csv_filepath= base_path / "data" / "database" / "purchases.csv"
+        self.temp_csv_filepath= base_path / "data" / "database" / "temp.csv"
+        with open(self.purchases_csv_filepath,"r",newline="") as f,open(self.temp_csv_filepath,"w",newline="")as temp:
+            self.reader=csv.DictReader(f)
+            headers=self.reader.fieldnames
+            self.writer=csv.DictWriter(temp,fieldnames=headers)
+            self.writer.writeheader()
+            for i in self.reader:
+                if i["Purchase Id"]==purchaseid:
+                    self.wrong_qty=int(i['Quantity'])
+                    i['Quantity']=mquantity
+                    i["Stock value"]= int(mquantity)*int(i['Unit price'])
+                    self.updated_product_data=i
+                    self.writer.writerow(i)
+                else:
+                    self.writer.writerow(i)
+            shutil.move(self.temp_csv_filepath,self.purchases_csv_filepath)
+
+            
+        self.purchaseslog_filepath=base_path / "data" / "database" / "stocklog" / "purchases_log.csv"
+        self.temp_csv_filepath= base_path / "data" / "database" / "temp.csv"
+        with open(self.purchaseslog_filepath,"r",newline="") as f,open(self.temp_csv_filepath,"w",newline="")as temp:
+            self.reader=csv.DictReader(f)
+            headers=self.reader.fieldnames
+            self.writer=csv.DictWriter(temp,fieldnames=headers)
+            self.writer.writeheader()
+            for i in self.reader:
+                if i["Purchase Id"]==purchaseid:
+                    self.wrong_qty=int(i['Quantity'])
+                    i['Quantity']=mquantity
+                    i["Stock value"]= int(mquantity)*int(i['Unit price'])
+                    self.updated_product_data=i
+                    self.writer.writerow(i)
+                else:
+                    self.writer.writerow(i)
+            shutil.move(self.temp_csv_filepath,self.purchaseslog_filepath)
+            
+                    
+        self.inventory_csv_filepath= base_path / "data" / "database" / "inventory.csv"
+        self.temp_csv_filepath=base_path / "data" / "database" / "temp.csv"
+        with open(self.inventory_csv_filepath,"r",newline="")as file , open(self.temp_csv_filepath,"w",newline="")as temp:
+            self.reader=csv.DictReader(file)
+            headers=self.reader.fieldnames
+            self.writer=csv.DictWriter(temp,fieldnames=headers)
+            self.writer.writeheader()
+            for i in self.reader:
+                    if i["Product id"] == product_id:
+                        i["Quantity"]= (int(i["Quantity"])-self.wrong_qty)+int(mquantity)
+                        i["Stock value"]=int(i["Quantity"])*int(i["Unit price"])
+                        self.writer.writerow(i)
+                    else:
+                        self.writer.writerow(i)
+            shutil.move(self.temp_csv_filepath,self.inventory_csv_filepath)
+        
+       
+            
+        
+        
+        
+
     
