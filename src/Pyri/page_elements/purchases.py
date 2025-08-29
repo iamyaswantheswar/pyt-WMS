@@ -39,13 +39,18 @@ class purchases_elements:
         self.add_product_button=ui.Button(frame,text="Add new product",command = lambda : purchases_elements.add_product(self,home,frame),width=30,font=("Arial",10,"bold"))
         self.add_product_button.place(relx=0.02,rely=0.05)
         self.stock_existing_product_button=ui.Button(frame,text="Add stock ",command = lambda : purchases_elements.add_stock(self,home,frame),width=30,font=("Arial",10,"bold"))
-        self.stock_existing_product_button.place(relx=0.02,rely=0.2)
-        self.stock_existing_product_button=ui.Button(frame,text="Modify Purchase ",command = lambda : purchases_elements.modify_purchase(self,home,frame),width=30,font=("Arial",10,"bold"))
-        self.stock_existing_product_button.place(relx=0.02,rely=0.3)
+        self.stock_existing_product_button.place(relx=0.02,rely=0.25)
+        
+        self.modify_purchase_button=ui.Button(frame,text="Modify Purchase ",command = lambda : purchases_elements.modify_purchase(self,home,frame),width=30,font=("Arial",10,"bold"))
+        self.modify_purchase_button.place(relx=0.02,rely=0.45)
+        
+        self.view_history_button=ui.Button(frame,text="View Purchase history ",command = lambda : purchases_elements.view_purchase_history(self,home),width=30,font=("Arial",10,"bold"))
+        self.view_history_button.place(relx=0.02,rely=0.65)
+        
         purchases_elements.refresh_csv(self,frame,home)
         self.csv_data=purchases_elements.open_purchases_csv(self)
         purchases_elements.display_csv(self,frame,self.csv_data,0,1)
-        purchases_elements.refresh_csv(self,frame,home)
+        
         
 
 
@@ -511,15 +516,103 @@ class purchases_elements:
                 
                 
 
-
-
-
-
-
-
 ########################################################## View Purchase History ############################################################
-                
+    def view_purchase_history(self,home):
+        self.view_purchase_history_window=ui.Toplevel(home)
+        self.view_purchase_history_window.title("Purchase History")
+        self.view_purchase_history_window.configure(bg="white")
+        self.view_purchase_history_window.geometry("700x150")
+                                                
+        self.view_history_date = ui.Label(self.view_purchase_history_window, text="Enter date [DD-MM-YYYY}",bg="white",font=('Arial',10))
+        self.view_history_date.place(relx=0.05,rely=0.2,anchor="w")
+
+        self.entry_view_history_date=ui.Entry(self.view_purchase_history_window, width=30,bd=2,font=('Arial',13))
+        self.entry_view_history_date.place(relx=0.05, rely=0.5, anchor='w')
+        
+        
+        self.cal_history_button=ui.Button(self.view_purchase_history_window,text="Choose date", command = lambda : purchases_elements.open_history_calendar(self,home),bg="white")
+        self.cal_history_button.place(relx=0.5, rely=0.5, anchor='w')
+        
+        self.confirm_button=ui.Button(self.view_purchase_history_window,text="CONFIRM", command = lambda : purchases_elements.verify_entry(self,home,self.entry_view_history_date.get()),bg="white",width= 25,font=("Arial",10,"bold"))
+        self.confirm_button.place(relx=0.5, rely=0.8, anchor="center")
+
+    def open_history_calendar(self,home):
+        self.cal_window=ui.Toplevel(home)
+        self.cal_window.title("Select Date")
+        self.cal_window.geometry("300x300")
+        self.cal = Calendar(self.cal_window,selectmode="day",date_pattern="dd-mm-yyyy")
+        self.cal.pack()
+        def enter_date(self):
+            self.entry_view_history_date.delete(0,ui.END)
+            self.entry_view_history_date.insert(0,self.cal.get_date())
+            self.cal_window.destroy()
+        ui.Button(self.cal_window,text="Select",command=lambda : enter_date(self)).pack(pady=5)
+
+    def verify_entry(self,home,date):
+        try:
+            datetime.strptime(date,"%d-%m-%Y")
+        except:
+            messagebox.showerror("Invalid Entry","Enter date in given format")
+            self.view_purchase_history_window.destroy()
+            purchases_elements.view_purchase_history(self,home)
+            return
+        purchases_elements.purchase_history_window(self,home,date)
             
+            
+
+    def purchase_history_window(self,home,date):
+        self.view_purchase_history_window.destroy()
+        self.purchase_history_window=ui.Toplevel(home)
+        self.purchase_history_window.title(f"Purchases on {date}")
+        self.purchase_history_window.configure(bg="white")
+
+        self.csv_data=purchases_elements.open_purchases_history_csv(self)
+        purchases_elements.display_history_csv(self,self.purchase_history_window,self.csv_data,date,0,0)
+
+    def open_purchases_history_csv(self):
+        self.purchaseslog_csv_filepath= base_path / "data" / "database" / "stocklog" / "purchases_log.csv"
+        
+        with open(self.purchaseslog_csv_filepath,newline="")as f:
+            self.reader=csv.reader(f)
+            return list(self.reader)
+
+
+    def display_history_csv(self,window,data,date,row,column,colspan=2):
+        self.tree=ttk.Treeview(window,columns=data[0],show="headings")
+        self.tree.grid(row=row,column=column,columnspan=colspan,sticky="nsew",padx=(0,0),pady=(0,0))
+            #configure coloumns
+        for col in data[0]:
+            self.tree.heading(col,text=col)
+            self.tree.column(col,anchor="center",width=120)
+            #inserting rows
+        for row_data in data[1:]:
+            self.entry_count=0
+            if row_data[-2]==date:
+                self.tree.insert("","end",values=row_data)
+                self.entry_count+=1
+        if self.entry_count==0:
+            self.tree.destroy()
+            self.purchase_history_window.geometry("900x300")
+            self.lable_no_purchase_history=ui.Label(window,text="No Purchase records on this date",bg="white",font=('Arial',20,"bold"))
+            self.lable_no_purchase_history.place(relx=0.5,rely=0.5,anchor="center")
+        return self.tree
+
+
+    
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
             
         
                 
