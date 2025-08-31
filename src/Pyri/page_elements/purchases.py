@@ -6,6 +6,7 @@ import csv
 from datetime import datetime
 from tkinter import messagebox
 from database.PurchaseDH import PurchasesDataHandler
+#from database.VendorDH import VendorDataHandler
 
 
 
@@ -23,7 +24,7 @@ class purchases_elements:
             for row in self.reader:
                 if row==[]:
                     continue
-                elif row[-2]==self.current_date:
+                elif row[-3]==self.current_date:
                     self.csv_data.append(row)
                 
         with open(self.purchases_csv_filepath,"w",newline="") as f:
@@ -35,21 +36,22 @@ class purchases_elements:
         self.tree.destroy()
     
     def purchases_ele(self,frame,home):
-        frame.grid_columnconfigure(0,minsize=300)
-        self.add_product_button=ui.Button(frame,text="Add new product",command = lambda : purchases_elements.add_product(self,home,frame),width=30,font=("Arial",10,"bold"))
-        self.add_product_button.place(relx=0.02,rely=0.05)
-        self.stock_existing_product_button=ui.Button(frame,text="Add stock ",command = lambda : purchases_elements.add_stock(self,home,frame),width=30,font=("Arial",10,"bold"))
-        self.stock_existing_product_button.place(relx=0.02,rely=0.25)
+        frame.grid_columnconfigure(0,minsize=170)
+        self.add_product_button=ui.Button(frame,text="Add new product",command = lambda : purchases_elements.add_product(self,home,frame),width=17,font=("Arial",10,"bold"))
+        self.add_product_button.place(relx=0.01,rely=0.05)
         
-        self.modify_purchase_button=ui.Button(frame,text="Modify Purchase ",command = lambda : purchases_elements.modify_purchase(self,home,frame),width=30,font=("Arial",10,"bold"))
-        self.modify_purchase_button.place(relx=0.02,rely=0.45)
+        self.stock_existing_product_button=ui.Button(frame,text="Add stock ",command = lambda : purchases_elements.add_stock(self,home,frame),width=17,font=("Arial",10,"bold"))
+        self.stock_existing_product_button.place(relx=0.01,rely=0.25)
         
-        self.delete_purchase_button=ui.Button(frame,text="Delete Purchase ",command = lambda : purchases_elements.delete_purchase(self,home,frame),width=30,font=("Arial",10,"bold"))
-        self.delete_purchase_button.place(relx=0.02,rely=0.65)
+        self.modify_purchase_button=ui.Button(frame,text="Modify Purchase ",command = lambda : purchases_elements.modify_purchase(self,home,frame),width=17,font=("Arial",10,"bold"))
+        self.modify_purchase_button.place(relx=0.01,rely=0.45)
+        
+        self.delete_purchase_button=ui.Button(frame,text="Delete Purchase ",command = lambda : purchases_elements.delete_purchase(self,home,frame),width=17,font=("Arial",10,"bold"))
+        self.delete_purchase_button.place(relx=0.01,rely=0.65)
         
         
-        self.view_history_button=ui.Button(frame,text="View Purchase history ",command = lambda : purchases_elements.view_purchase_history(self,home),width=30,font=("Arial",10,"bold"))
-        self.view_history_button.place(relx=0.02,rely=0.85)
+        self.view_history_button=ui.Button(frame,text="View Purchase history ",command = lambda : purchases_elements.view_purchase_history(self,home),width=17,font=("Arial",10,"bold"))
+        self.view_history_button.place(relx=0.01,rely=0.85)
 
         
         
@@ -82,60 +84,7 @@ class purchases_elements:
             self.reader=csv.reader(f)
             return list(self.reader)
         
-#######################################################ADD STOCK CODE #########################################################################################
-    def get_data_add_stock(self,frame,home,exsisting_stock,unit_price):
-        self.uproduct_id=self.entry_uproduct_id.get()
-        self.additional_product_quantity=int(self.entry_uproduct_quantity.get())
-        self.product_final_quantity=self.additional_product_quantity + exsisting_stock
-        self.product_final_stockvalue=self.product_final_quantity *  unit_price
-        self.inventory_csv_filepath= base_path / "data" / "database" / "inventory.csv"
-        self.data=[]
-        with open(self.inventory_csv_filepath,"r",newline="")as file:
-            self.reader=csv.reader(file)
-            for row in self.reader:
-                if row==[]:
-                    continue
-                elif row[0]==self.entry_uproduct_id.get():
-                    d=row.copy()
-                    d[2]=self.additional_product_quantity
-                    d[4]=int(self.additional_product_quantity)*int(d[3])
-                    row[2]=self.product_final_quantity
-                    row[4]=self.product_final_stockvalue
-                    self.data.append(row)
-                else:
-                    self.data.append(row)
-        with open(self.inventory_csv_filepath,"w",newline="")as file:
-            self.writer=csv.writer(file)
-            self.writer.writerows(self.data)
-            
-        self.purchases_csv_filepath= base_path / "data" / "database" / "purchases.csv"
-        
-        with open(self.purchases_csv_filepath,"a+",newline="") as f:
-            writer=csv.writer(f)
-            self.current_date=datetime.now().strftime("%d-%m-%Y")
-            self.current_date_time=datetime.now().strftime("%d%m%Y%H%M")
-            self.product_purchase_id=self.uproduct_id+str(self.additional_product_quantity)+self.current_date_time
-            self.list_purchase=d[0:7]+[self.current_date]+[self.product_purchase_id]
-            writer.writerow(self.list_purchase)
-            
-        self.purchaseslog_filepath=base_path / "data" / "database" / "stocklog" / "purchases_log.csv"
-        with open(self.purchaseslog_filepath,"a+",newline="") as f:
-            writer=csv.writer(f)
-            self.list_purchase=d[0:7]+[self.current_date]+[self.product_purchase_id]
-            writer.writerow(self.list_purchase)
-
-        self.tree.destroy()
-        self.csv_data=purchases_elements.open_purchases_csv(self)
-        purchases_elements.display_csv(self,frame,self.csv_data,0,1)
-
-            
-        
-                    
-        
-        
-
-
-
+#######################################################ADD STOCK CODE #######################################################################################
 
     def update_entry_check(self,frame,home):
         try:

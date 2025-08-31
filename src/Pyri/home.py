@@ -42,7 +42,7 @@ class cmds():
         print("user entered sales")
         self.lable_frame = ui.Frame(self.home,bg="blue")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        sales_elements.sales_ele(self,self.lable_frame)
+        sales_elements.sales_ele(self,self.lable_frame,self.home)
 
     def purchases_ui(self):
         self.dest()
