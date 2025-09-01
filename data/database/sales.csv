@@ -1,1 +1,1 @@
-sale_id,stock_id,quantity,status,date
+Product id,Product name,Quantity,Unit Cost price,Unit Sale price,Final sale price,Stock value,Net profit,Sale Date,Sale id,Customer id
