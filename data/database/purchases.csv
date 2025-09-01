@@ -1,1 +1,3 @@
-Product id,Product name,Quantity,Unit price,Stock value,Location,Expiry Date,Purchase Date,Purchase Id,Vendor id
+Product id,Product name,Quantity,Unit Cost price,Unit Sale price,Stock value,Location,Expiry Date,Purchase Date,Purchase id,Vendor id
+112233,qwerty,10,10,11,100,44223,25-09-2025,01-09-2025,11223332010920252119,111123
+223344,yuu,100,1,2,100,23443,18-09-2025,01-09-2025,223344100010920252134,111123
