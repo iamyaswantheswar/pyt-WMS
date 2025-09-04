@@ -26,7 +26,7 @@ class purchases_elements:
             for row in self.reader:
                 if row["Purchase Date"]==self.current_date:
                     self.writer.writerow(row)
-            shutil.move(self.temp_csv_filepath,self.purchases_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.purchases_csv_filepath)
 
         
         self.csv_data=purchases_elements.open_purchases_csv(self)
@@ -100,24 +100,24 @@ class purchases_elements:
         self.add_vendor_window=ui.Toplevel(home)
         self.add_vendor_window.title("Add Vendor")
         self.add_vendor_window.configure(bg="white")
-        self.add_vendor_window.geometry("1000x600")
+        self.add_vendor_window.geometry("500x200")
         
         self.label_vendor_id = ui.Label(self.add_vendor_window, text="Vendor ID",bg="white",font=('Arial',10))
         self.label_vendor_id.place(relx=0.05,rely=0.05,anchor="w")
                 
         self.entry_vendor_id=ui.Entry(self.add_vendor_window, width=40,bd=2,font=('Arial',13))
-        self.entry_vendor_id.place(relx=0.05, rely=0.1, anchor="w")
+        self.entry_vendor_id.place(relx=0.05, rely=0.2, anchor="w")
                 
                 
         self.label_vendor_name = ui.Label(self.add_vendor_window, text="Vendor Name",bg="white",font=('Arial',10))
-        self.label_vendor_name.place(relx=0.05,rely=0.35,anchor="w")
+        self.label_vendor_name.place(relx=0.05,rely=0.45,anchor="w")
 
         self.entry_vendor_name=ui.Entry(self.add_vendor_window, width=40,bd=2,font=('Arial',13))
-        self.entry_vendor_name.place(relx=0.05, rely=0.4, anchor='w')
+        self.entry_vendor_name.place(relx=0.05, rely=0.6, anchor='w')
                                             
 
         self.confirm_button=ui.Button(self.add_vendor_window,text="CONFIRM", command = lambda : purchases_elements.vendor_data_check(self,frame,home),bg="white",width= 25,font=("Arial",10,"bold"))
-        self.confirm_button.place(relx=0.5, rely=0.95, anchor="center")
+        self.confirm_button.place(relx=0.5, rely=0.85, anchor="center")
         
     def vendor_data_check(self,frame,home):
         self.vendor_csv_filepath= base_path / "data" / "database" / "vendor.csv"
