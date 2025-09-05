@@ -6,8 +6,10 @@ import csv
 import shutil
 from datetime import datetime
 from tkinter import messagebox
+from tkinter import simpledialog
 from database.SalesDH import SalesDataHandler
 from database.CustomerDH import CustomerDataHandler
+from database.DemandDH import DemandDataHandler
 
 
 base_path = Path(__file__).parent.parent.parent.parent
@@ -58,6 +60,7 @@ class sales_elements:
         def display_csv(self,frame,data,row,column,colspan=1):
                 self.style=ttk.Style()
                 self.style.theme_use("clam")
+                self.style.configure("Treeview",bg="white")
                 self.tree=ttk.Treeview(frame,columns=data[0],show="headings")
                 self.tree.grid(row=row,column=column,columnspan=colspan,sticky="nsew",padx=(0,0),pady=(0,0))
                 self.hbar=ttk.Scrollbar(frame,orient="horizontal",command=self.tree.xview)
@@ -162,7 +165,18 @@ class sales_elements:
                                                 if int(i["Quantity"]) == 0:
                                                         self.response = messagebox.askyesno("Low Quantity","Stock unavailable \n Do you wan to raise a demand ?")
                                                         if self.response == True :
-                                                                pass #raise demand code
+                                                                self.demand_qty=simpledialog.askstring("Input","Enter Demand Quantity")
+                                                                try:
+                                                                        int(self.demand_qty)
+                                                                except:
+                                                                        messagebox.showerror("Invalid Entry","Please enter valid data")
+                                                                        sales_elements.get_product_data(self,frame,home,productid)
+                                                                        return
+                                                                i["Quantity"]=self.demand_qty
+                                                                DemandDataHandler.WriteDemandrecord(self,i)
+                                                                self.new_sale_window.destroy()
+                                                                return
+                                                                
                                                         else:
                                                                 messagebox.showerror("Low Quantity","Can't proceed with sale")
                                                                 self.new_sale_window.destroy()
@@ -289,7 +303,9 @@ class sales_elements:
                         self.csv_data=sales_elements.open_sales_csv(self)
                         sales_elements.display_csv(self,frame,self.csv_data,0,1)
                         if self.demand_quantity!=0:
-                                pass #code for demand
+                                self.demand_data=productdata
+                                self.demand_data["Quantity"]=self.demand_quantity
+                                DemandDataHandler.WriteDemandrecord(self,self.demand_data)
                 else:
                         s=""
                         for i in self.errors:

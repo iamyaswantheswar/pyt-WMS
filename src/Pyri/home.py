@@ -54,9 +54,9 @@ class cmds():
     def demand_ui(self):
         self.dest()
         print("user entered demand")
-        self.lable_frame = ui.Frame(self.home,bg="lightgreen")
+        self.lable_frame = ui.Frame(self.home,bg="lightblue")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        demand_elements.demand_ele(self,self.lable_frame)
+        demand_elements.demand_ele(self,self.lable_frame,home)
 
     def createcmd(self, name):
         func = getattr(self, name.lower() + "_ui", None)
