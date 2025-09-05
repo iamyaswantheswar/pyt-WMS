@@ -1,14 +1,13 @@
-# This file contains the entities used in the database.
-# And also the functions for the entities
-# It will be imported by other files in the database.
 import csv
 import shutil
 import datetime
-import os
 from pathlib import Path
+
+from src.Pyri.page_elements.inventory import inventory_elements
 
 base_path = Path(__file__).parent.parent.parent.parent
 
+inventory_path = base_path / 'data' / 'database' / 'inventory.csv'
 
 def generate_location_id(block, zone, aisle, rack, shelf):
     location_id = f"{block}-{zone}-{aisle}-{rack}-{shelf}"
@@ -31,8 +30,9 @@ class Product:
         # give only product_id if you want to fetch the product details from the database
         # give all the details if you want to create a new product and set new = True
         self.product_id = product_id
+        self.inventory_path = inventory_path
         if not new:
-            with open(base_path / 'data' / 'database' / 'purchases.csv', mode='r', newline='') as file:
+            with open(self.inventory_path, mode='r', newline='') as file:
                 reader = csv.DictReader(file)
                 for row in reader:
                     if row["id"] == self.product_id:
@@ -51,11 +51,11 @@ class Product:
                              location, expiry_date)
 
         else:
-            raise ValueError(f"Purchase with ID {self.id} not found.")
+            raise ValueError(f"Purchase with ID {self.product_id} not found.")
 
     def backup_csv(self):
         # backup the products.csv file to history folder with timestamp in the name
-        file_path = base_path / "data" / "database" / "products.csv"
+        file_path = self.inventory_path
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_name = f"{file_path.stem}_{timestamp}.csv"
         shutil.copy2(file_path, f"{file_path.parent}/history/products/{backup_name}")
@@ -64,7 +64,19 @@ class Product:
                              location, expiry_date):
 
         def error_check():
-            if quantity
+            try:
+                if int(quantity) < 0:
+                    raise ValueError("Quantity cannot be negative")
+                if float(unit_cost_price) < 0:
+                    raise ValueError("Unit cost price cannot be negative")
+                if float(unit_sale_price) < 0:
+                    raise ValueError("Unit sale price cannot be negative")
+                if float(stock_value) < 0:
+                    raise ValueError("Stock value cannot be negative")
+            except ValueError as e:
+                raise ValueError(e)
+
+        error_check()
 
         data = [
             [
@@ -81,8 +93,8 @@ class Product:
 
         self.backup_csv()
 
-        with open(base_path / "data" / "database" / "products.csv", 'a', newline='') as file:
-            writer = csv.writer(file)
+        with open(self.inventory_path, 'a', newline='') as file:
+            writer = csv.DictWriter(file)
             writer.writerows(data)
 
     def update_quantity(self, quantity, WriteToCSV=False):
@@ -95,8 +107,10 @@ class Product:
         if WriteToCSV:
             self.write_to_csv()
 
+    '''
     def generate_stock_id(self, loc):
         return f"{self.id}@{loc}"
+    '''
 
     def update_location(self, location, WriteToCSV=False):
         self.locations = location
@@ -105,7 +119,7 @@ class Product:
 
     def write_to_csv(self):
         self.backup_csv()
-        with open(base_path / "data" / "database" / "products.csv", mode='r', newline='') as file:
+        with open(self.inventory_path, mode='r', newline='') as file:
             reader = csv.DictReader(file)
             rows = list(reader)
             for row in rows:
@@ -118,7 +132,7 @@ class Product:
                     row["quantity_in_stock"] = self.quantity_in_stock
                     row["price"] = self.price
                     row["locations"] = self.locations
-                    with open(base_path / "data" / "database" / "products.csv", mode='w', newline='') as file2:
+                    with open(self.inventory_path, mode='w', newline='') as file2:
                         writer = csv.DictWriter(file2, fieldnames=["id", "name", "category", "dimensions", "weight",
                                                                    "quantity_in_stock", "price", "locations"])
                         writer.writeheader()
