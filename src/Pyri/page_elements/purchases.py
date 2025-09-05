@@ -549,7 +549,7 @@ class purchases_elements:
             except:
                 messagebox.showerror("Invalid entry","Invalid data type")
                 self.mproduct_window.destroy()
-                purchases_elements.modify_purchasedata_window(self,home,purchaseid)
+                purchases_elements.modify_purchasedata_window(self,home,frame,purchaseid,product_id,vendorid,unitprice)
                 return
             if int(mquantity) == 0:
                 self.response = messagebox.askyesno("Warning","Do you really  want to delete this purchase transation")

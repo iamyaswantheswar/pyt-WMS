@@ -8,16 +8,16 @@ from pathlib import Path
 ##ast.literal_eval(data)
 base_path = Path(__file__).parent.parent.parent.parent
 class CustomerDataHandler:
-    def GetVendorIds(self):
-        self.Vendor_csv_filepath= base_path / "data" / "database" / "vendor.csv"
-        with open(self.Vendor_csv_filepath,"r",newline="") as file:
+    def GetCustomerIds(self):
+        self.customer_csv_filepath= base_path / "data" / "database" / "customer.csv"
+        with open(self.customer_csv_filepath,"r",newline="") as file:
             self.reader=csv.DictReader(file)
             headers=self.reader.fieldnames
-            self.vendorid_list=[]
+            self.customerid_list=[]
             for i in self.reader:
-                self.id_name=i["Vendor id"]+" "+i["Vendor name"]
-                self.vendorid_list.append(self.id_name)
-            return self.vendorid_list
+                self.id_name=i["Customer id"]+" "+i["Customer name"]
+                self.customerid_list.append(self.id_name)
+            return self.customerid_list
 
     def add_customer(self,customerid,customername):
         self.customer_csv_filepath= base_path / "data" / "database" / "customer.csv"
@@ -30,61 +30,46 @@ class CustomerDataHandler:
             data["Stock Value"]=0
             data["Sale ids"]=[]
             self.writer.writerow(data)
-    def add_purchase(self,vendorid,stockvalue,purchaseid):
-        self.Vendor_csv_filepath= base_path / "data" / "database" / "vendor.csv"
+    def add_sale(self,customerid,salevalue,saleid):
+        self.customer_csv_filepath= base_path / "data" / "database" / "customer.csv"
         self.temp_csv_filepath=base_path / "data" / "database" / "temp.csv"
-        with open(self.Vendor_csv_filepath,"r",newline="") as file,open(self.temp_csv_filepath,"w",newline="")as temp:
+        with open(self.customer_csv_filepath,"r",newline="") as file,open(self.temp_csv_filepath,"w",newline="")as temp:
             self.reader=csv.DictReader(file)
             headers=self.reader.fieldnames
             self.writer=csv.DictWriter(temp,fieldnames=headers)
             self.writer.writeheader()
             for i in self.reader:
-                if i["Vendor id"]==vendorid:
-                    self.purchases_data=ast.literal_eval(i["Purchase ids"])
-                    self.purchases_data.append(purchaseid)
-                    i["Purchase ids"]=self.purchases_data
-                    i["Stock Value"]=int(i["Stock Value"])+int(stockvalue)
+                if i["Customer id"]==customerid:
+                    self.purchases_data=ast.literal_eval(i["Sale ids"])
+                    self.purchases_data.append(saleid)
+                    i["Sale ids"]=self.purchases_data
+                    i["Stock Value"]=int(i["Stock Value"])+int(salevalue)
                     self.writer.writerow(i)
                 else:
                     self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.Vendor_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.customer_csv_filepath)
 
 
-    def modify_purchase(self,mquantity,vendorid,unitprice,wrongqty):
-        self.Vendor_csv_filepath= base_path / "data" / "database" / "vendor.csv"
+
+            
+    def delete_sale(self,customerid,saleid,oldsprice,oldqty):
+        self.customer_csv_filepath= base_path / "data" / "database" / "customer.csv"
         self.temp_csv_filepath=base_path / "data" / "database" / "temp.csv"
-        with open(self.Vendor_csv_filepath,"r",newline="") as file,open(self.temp_csv_filepath,"w",newline="")as temp:
+        with open(self.customer_csv_filepath,"r",newline="") as file,open(self.temp_csv_filepath,"w",newline="")as temp:
             self.reader=csv.DictReader(file)
             headers=self.reader.fieldnames
             self.writer=csv.DictWriter(temp,fieldnames=headers)
             self.writer.writeheader()
             for i in self.reader:
-                if i["Vendor id"]==vendorid:
-                    self.wrong_stock_value=int(unitprice)*int(wrongqty)
-                    self.new_stock_value=int(unitprice)*int(mquantity)
-                    i["Stock Value"]=(int(i["Stock Value"])-int(self.wrong_stock_value))+self.new_stock_value
+                if i["Customer id"]==customerid:
+                    self.sales_data=ast.literal_eval(i["Sale ids"])
+                    self.sales_data.remove(saleid)
+                    i["Sale ids"]=self.sales_data
+                    i["Stock Value"]=int(i["Stock Value"])-(int(oldsprice)*int(oldqty))
                     self.writer.writerow(i)
                 else:
                     self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.Vendor_csv_filepath)
-    def delete_purchase(self,vendorid,purchaseid,unitprice,previousqty):
-        self.Vendor_csv_filepath= base_path / "data" / "database" / "vendor.csv"
-        self.temp_csv_filepath=base_path / "data" / "database" / "temp.csv"
-        with open(self.Vendor_csv_filepath,"r",newline="") as file,open(self.temp_csv_filepath,"w",newline="")as temp:
-            self.reader=csv.DictReader(file)
-            headers=self.reader.fieldnames
-            self.writer=csv.DictWriter(temp,fieldnames=headers)
-            self.writer.writeheader()
-            for i in self.reader:
-                if i["Vendor id"]==vendorid:
-                    self.purchases_data=ast.literal_eval(i["Purchase ids"])
-                    self.purchases_data.remove(purchaseid)
-                    i["Purchase ids"]=self.purchases_data
-                    i["Stock Value"]=int(i["Stock Value"])-(int(unitprice)*int(previousqty))
-                    self.writer.writerow(i)
-                else:
-                    self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.Vendor_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.customer_csv_filepath)
 
 
 

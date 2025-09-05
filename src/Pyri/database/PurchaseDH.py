@@ -62,7 +62,7 @@ class PurchasesDataHandler:
                         self.writer.writerow(i)
                     else:
                         self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.inventory_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.inventory_csv_filepath)
 
             
         self.purchases_csv_filepath= base_path / "data" / "database" / "purchases.csv"
@@ -106,7 +106,7 @@ class PurchasesDataHandler:
                     self.writer.writerow(i)
                 else:
                     self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.purchases_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.purchases_csv_filepath)
 
             
         self.purchaseslog_filepath=base_path / "data" / "database" / "stocklog" / "purchases_log.csv"
@@ -125,7 +125,7 @@ class PurchasesDataHandler:
                     self.writer.writerow(i)
                 else:
                     self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.purchaseslog_filepath)
+        shutil.move(self.temp_csv_filepath,self.purchaseslog_filepath)
             
                     
         self.inventory_csv_filepath= base_path / "data" / "database" / "inventory.csv"
@@ -145,7 +145,7 @@ class PurchasesDataHandler:
                             self.writer.writerow(i)
                     else:
                         self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.inventory_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.inventory_csv_filepath)
         
     def delete_purchase(self,purchaseid,product_id):
         self.purchases_csv_filepath= base_path / "data" / "database" / "purchases.csv"
@@ -162,7 +162,7 @@ class PurchasesDataHandler:
                     
                 else:
                     self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.purchases_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.purchases_csv_filepath)
 
             
         self.purchaseslog_filepath=base_path / "data" / "database" / "stocklog" / "purchases_log.csv"
@@ -177,7 +177,7 @@ class PurchasesDataHandler:
                     pass
                 else:
                     self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.purchaseslog_filepath)
+        shutil.move(self.temp_csv_filepath,self.purchaseslog_filepath)
             
                     
         self.inventory_csv_filepath= base_path / "data" / "database" / "inventory.csv"
@@ -198,7 +198,7 @@ class PurchasesDataHandler:
                         None
                     else:
                         self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.inventory_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.inventory_csv_filepath)
         
             
         
