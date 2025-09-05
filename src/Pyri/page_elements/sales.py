@@ -23,11 +23,11 @@ class sales_elements:
                 self.modify_sale_button=ui.Button(frame,text="Modify sale ",command = lambda : sales_elements.modify_sale(self,frame,home),width=25,font=("Arial",10,"bold"))
                 self.modify_sale_button.place(relx=0.02,rely=0.45)
                 
-                self.delete_sale_button=ui.Button(frame,text="Delete sale ",command = lambda : None,width=25,font=("Arial",10,"bold"))
+                self.delete_sale_button=ui.Button(frame,text="Delete sale ",command = lambda : sales_elements.delete_sale(self,home,frame),width=25,font=("Arial",10,"bold"))
                 self.delete_sale_button.place(relx=0.02,rely=0.65)
                 
                 
-                self.view_history_button=ui.Button(frame,text="View sales history ",command = lambda : None ,width=25,font=("Arial",10,"bold"))
+                self.view_history_button=ui.Button(frame,text="View sales history ",command = lambda : sales_elements.view_sale_history(self,home) ,width=25,font=("Arial",10,"bold"))
                 self.view_history_button.place(relx=0.02,rely=0.85)
 
                 sales_elements.refresh_csv(self,frame,home)
@@ -243,7 +243,7 @@ class sales_elements:
                 
 
         def entry_check(self,frame,home,productdata):
-                #Product id,Product name,Quantity,Unit Cost price,Unit Sale price,Final sale price,Stock value,Net profit,Sale Date,Sale id,Customer id
+                
                 self.errors=[]
                 if self.entry_product_fsaleprice.get()!="":
                         try:
@@ -280,6 +280,7 @@ class sales_elements:
                 if self.errors==[]:
                         self.current_date=datetime.now().strftime("%d%m%Y%H%M%S")
                         self.sale_id="S" + productdata["Product id"]+str(self.sale_quantity)+self.current_date
+                        #goes to backend
                         SalesDataHandler.WriteSalerecord(self,productdata,self.sale_price,self.sale_quantity,self.sale_customer_id,self.sale_id)
                         self.sale_value=int(self.sale_price)*int(self.sale_quantity)
                         CustomerDataHandler.add_sale(self,self.sale_customer_id,self.sale_value,self.sale_id)
@@ -441,11 +442,13 @@ class sales_elements:
                                 for i in self.reader:
                                         if i["Product id"] == product_id:
                                                 self.product_data=i
+                        #goes to backend
                         SalesDataHandler.delete_sale(self,saleid,product_id)
                         CustomerDataHandler.delete_sale(self,customerid,saleid,oldsprice,oldqty)
                         
                         SalesDataHandler.WriteSalerecord(self,self.product_data,newsprice,newqty,customerid,saleid)
                         self.sale_value=int(newsprice)*int(newqty)
+                        
                         CustomerDataHandler.add_sale(self,customerid,self.sale_value,saleid) 
                         self.tree.destroy()
                         self.csv_data=sales_elements.open_sales_csv(self)
@@ -454,9 +457,173 @@ class sales_elements:
                         
 
 
+##################################################################################### Delete sale ###############################################
+        def delete_sale(self,home,frame):
+                
+                self.delete_sale_window=ui.Toplevel(home)
+                self.delete_sale_window.title("Delete sale Record")
+                self.delete_sale_window.configure(bg="white")
+                self.delete_sale_window.geometry("700x150")
+
+                self.label_dproduct_id = ui.Label(self.delete_sale_window, text="Product ID",bg="white",font=('Arial',10))
+                self.label_dproduct_id.place(relx=0.05,rely=0.2,anchor="w")
+
+                self.entry_dproduct_id=ui.Entry(self.delete_sale_window, width=40,bd=2,font=('Arial',13))
+                self.entry_dproduct_id.place(relx=0.05, rely=0.5, anchor='w')
+
+                self.confirm_button=ui.Button(self.delete_sale_window,text="CONFIRM", command = lambda : sales_elements.get_dsale_ids(self,home,frame,self.entry_dproduct_id.get()),bg="white",width= 25,font=("Arial",10,"bold"))
+                self.confirm_button.place(relx=0.5, rely=0.8, anchor="center")
+        def get_dsale_ids(self,home,frame,product_id):
+                if product_id == "":
+                        messagebox.showerror("Empty id","Product id  can't be empty.")
+                        self.delete_sale_window.destroy()
+                        sales_elements.delete_sale(self,home,frame)
+                else:
+                        self.delete_sale_window.destroy()
+                        self.sales_csv_filepath= base_path / "data" / "database" / "sales.csv"
+                        with open(self.sales_csv_filepath,"r",newline="")as file:
+                                self.reader=csv.DictReader(file)
+                                self.sale_ids=[]
+                                for i in self.reader:
+                                        if i["Product id"] == product_id:
+                                                self.sale_ids.append(i["Sale id"])
+                        if self.sale_ids==[]:
+                                messagebox.showerror("Invalid id","Product id doesnt exist")
+                                self.delete_sale_window.destroy()
+                                sales_elements.delete_sale(self,home,frame)
+                        else:
+                                self.delete_sale_window.destroy()
+                                sales_elements.delete_sale_choose_saleid(self,home,frame,self.sale_ids,product_id)
+                            
+        def delete_sale_choose_saleid(self,home,frame,saleids,product_id):
+                self.delete_ids_window=ui.Toplevel(home)
+                self.delete_ids_window.title("Choose sale id to delete")
+                self.delete_ids_window.configure(bg="white")
+                self.delete_ids_window.geometry("500x200")
+                
+                self.label_dsale_ids= ui.Label(self.delete_ids_window, text="Choose Sale id",bg="white",font=('Arial',10))
+                self.label_dsale_ids.place(relx=0.05,rely=0.2,anchor="w")
+                
+                self.sale_ids=saleids
+                self.product_sale_id=ui.StringVar(value="Select Sale id")
+                self.option_product_sale_ids=ui.OptionMenu(self.delete_ids_window,self.product_sale_id,*self.sale_ids)
+                self.option_product_sale_ids.place(relx=0.05,rely=0.4,anchor="w")
+                self.option_product_sale_ids.configure(bg="white")
+
+                
+                self.confirm_button=ui.Button(self.delete_ids_window,text="CONFIRM", command = lambda : sales_elements.confirm_sale_data_deletion(self,home,frame,self.product_sale_id.get(),product_id),bg="white",width= 25,font=("Arial",10,"bold"))
+                self.confirm_button.place(relx=0.5, rely=0.8, anchor="center")
+                
+        def confirm_sale_data_deletion(self,home,frame,saleid,product_id):
+                if saleid=="Select Sale id":
+                    messagebox.showerror("Invalid selection","Please select Sale ID before pressing Confirm")
+                    self.delete_ids_window.destroy()
+                    sales_elements.get_dsale_ids(self,home,frame,product_id)
+                    return
+                self.response = messagebox.askyesno("Warning","Do you really  want to delete this sale transation")
+                if self.response==True:
+                        self.delete_ids_window.destroy()
+                        self.sales_csv_filepath= base_path / "data" / "database" / "sales.csv"
+                        with open(self.sales_csv_filepath,"r",newline="")as file:
+                                self.reader=csv.DictReader(file)
+                                self.sale_ids=[]
+                                for i in self.reader:
+                                    if i["Sale id"] == saleid:
+                                        self.sale_price=i["Final sale price"]
+                                        self.customer_id=i["Customer id"]
+                                        self.sale_quantity=i["Sale quantity"]
+                        #goes to backend
+                        SalesDataHandler.delete_sale(self,saleid,product_id)
+                        CustomerDataHandler.delete_sale(self,self.customer_id,saleid,self.sale_price,self.sale_quantity)
+                        self.tree.destroy()
+                        self.csv_data=sales_elements.open_sales_csv(self)
+                        sales_elements.display_csv(self,frame,self.csv_data,0,1)
+                else:
+                    self.delete_ids_window.destroy()
+
+################################################################### view sales history###############################################
+        def view_sale_history(self,home):
+                self.view_sale_history_window=ui.Toplevel(home)
+                self.view_sale_history_window.title("Sale History")
+                self.view_sale_history_window.configure(bg="white")
+                self.view_sale_history_window.geometry("700x150")
+                                                        
+                self.view_history_date = ui.Label(self.view_sale_history_window, text="Enter date [DD-MM-YYYY}",bg="white",font=('Arial',10))
+                self.view_history_date.place(relx=0.05,rely=0.2,anchor="w")
+
+                self.entry_view_history_date=ui.Entry(self.view_sale_history_window, width=30,bd=2,font=('Arial',13))
+                self.entry_view_history_date.place(relx=0.05, rely=0.5, anchor='w')
+                
+                
+                self.cal_history_button=ui.Button(self.view_sale_history_window,text="Choose date", command = lambda : sales_elements.open_history_calendar(self,home),bg="white")
+                self.cal_history_button.place(relx=0.5, rely=0.5, anchor='w')
+                
+                self.confirm_button=ui.Button(self.view_sale_history_window,text="CONFIRM", command = lambda : sales_elements.verify_entry(self,home,self.entry_view_history_date.get()),bg="white",width= 25,font=("Arial",10,"bold"))
+                self.confirm_button.place(relx=0.5, rely=0.8, anchor="center")
+
+        def open_history_calendar(self,home):
+                self.cal_window=ui.Toplevel(home)
+                self.cal_window.title("Select Date")
+                self.cal_window.geometry("300x300")
+                self.cal = Calendar(self.cal_window,selectmode="day",date_pattern="dd-mm-yyyy")
+                self.cal.pack()
+                def enter_date(self):
+                    self.entry_view_history_date.delete(0,ui.END)
+                    self.entry_view_history_date.insert(0,self.cal.get_date())
+                    self.cal_window.destroy()
+                ui.Button(self.cal_window,text="Select",command=lambda : enter_date(self)).pack(pady=5)
+
+        def verify_entry(self,home,date):
+                try:
+                    datetime.strptime(date,"%d-%m-%Y")
+                except:
+                    messagebox.showerror("Invalid Entry","Enter date in given format")
+                    self.view_sale_history_window.destroy()
+                    sales_elements.view_sale_history(self,home)
+                    return
+                sales_elements.sale_history_window(self,home,date)
+                    
+                    
+
+        def sale_history_window(self,home,date):
+                self.view_sale_history_window.destroy()
+                self.sale_history_window=ui.Toplevel(home)
+                self.sale_history_window.title(f"Sales on {date}")
+                self.sale_history_window.configure(bg="white")
+
+                self.csv_data=sales_elements.open_sales_history_csv(self)
+                sales_elements.display_history_csv(self,self.sale_history_window,self.csv_data,date,0,0)
+
+        def open_sales_history_csv(self):
+                self.saleslog_csv_filepath= base_path / "data" / "database" / "stocklog" / "sales_log.csv"
+                
+                with open(self.saleslog_csv_filepath,newline="")as f:
+                    self.reader=csv.reader(f)
+                    return list(self.reader)
 
 
-
+        def display_history_csv(self,window,data,date,row,column,colspan=2):
+                self.tree=ttk.Treeview(window,columns=data[0],show="headings")
+                self.tree.grid(row=row,column=column,columnspan=colspan,sticky="nsew",padx=(0,0),pady=(0,0))
+                self.entry_count=0
+                    #configure coloumns
+                for col in data[0]:
+                    self.tree.heading(col,text=col)
+                    self.tree.column(col,anchor="center",width=120)
+                    #inserting rows
+                for row_data in data[1:]:
+                    self.entry_count=0
+                    if row_data==[]:
+                        continue
+                    if row_data[-3]==date:
+                        self.tree.insert("","end",values=row_data)
+                        self.entry_count+=1
+                if self.entry_count==0:
+                    self.tree.destroy()
+                    self.sale_history_window.geometry("900x300")
+                    self.lable_no_sale_history=ui.Label(window,text="No sales records on this date",bg="white",font=('Arial',20,"bold"))
+                    self.lable_no_sale_history.place(relx=0.5,rely=0.5,anchor="center")
+                return self.tree
 
 
 

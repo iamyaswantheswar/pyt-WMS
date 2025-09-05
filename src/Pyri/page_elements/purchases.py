@@ -719,13 +719,14 @@ class purchases_elements:
     def display_history_csv(self,window,data,date,row,column,colspan=2):
         self.tree=ttk.Treeview(window,columns=data[0],show="headings")
         self.tree.grid(row=row,column=column,columnspan=colspan,sticky="nsew",padx=(0,0),pady=(0,0))
+        self.entry_count=0
             #configure coloumns
         for col in data[0]:
             self.tree.heading(col,text=col)
             self.tree.column(col,anchor="center",width=120)
             #inserting rows
         for row_data in data[1:]:
-            self.entry_count=0
+            
             if row_data==[]:
                 continue
             if row_data[-3]==date:
