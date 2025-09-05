@@ -251,7 +251,7 @@ class sales_elements:
                         except:
                                 self.errors.append("Sale price")
                 else:
-                     self.sale_price=product["Unit Sale price"]
+                     self.sale_price=productdata["Unit Sale price"]
                      
                 if self.entry_product_sale_quantity.get()=="":
                         self.errors.append("Sale quantity")
