@@ -74,13 +74,20 @@ class purchases_elements:
         self.tree.configure(xscrollcommand=self.hbar.set,yscrollcommand=self.vbar.set)
         self.hbar.grid(row=1,column=1,sticky="ew")
         self.vbar.grid(row=0,column=2,sticky="ns")
+        self.tree.tag_configure("oddrow",background="white")
+        self.tree.tag_configure("evenrow",background="lightblue")
             #configure coloumns
         for col in data[0]:
             self.tree.heading(col,text=col)
             self.tree.column(col,anchor="center",width=120)
             #inserting rows
+        self.count=0
         for row_data in data[1:]:
-            self.tree.insert("","end",values=row_data)
+            self.count+=1
+            if self.count % 2 == 0 :
+                self.tree.insert("","end",values=row_data,tags=("evenrow",))
+            else:
+                self.tree.insert("","end",values=row_data,tags=("oddrow",))
         frame.grid_rowconfigure(row,weight=1)
         frame.grid_columnconfigure(column,weight=1)
         return self.tree
@@ -360,7 +367,7 @@ class purchases_elements:
         self.add_product_window=ui.Toplevel(home)
         self.add_product_window.title("Add Product to Warehouse")
         self.add_product_window.configure(bg="white")
-        self.add_product_window.geometry("900x650")
+        self.add_product_window.geometry("900x670")
         #self.add_product_window.grab_set()
         #self.add_product_window.focus_set()
         self.label_product_name = ui.Label(self.add_product_window, text="Product Name",bg="white",font=('Arial',10))
@@ -446,7 +453,7 @@ class purchases_elements:
         self.option_product_location_shelf.configure(bg="white")
 
         self.confirm_button=ui.Button(self.add_product_window,text="CONFIRM", command = lambda : purchases_elements.entry_check(self,frame,home),bg="white",width= 25,font=("Arial",10,"bold"))
-        self.confirm_button.place(relx=0.5, rely=0.9, anchor="center")
+        self.confirm_button.place(relx=0.5, rely=0.95, anchor="center")
 
 
     
