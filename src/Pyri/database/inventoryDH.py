@@ -14,15 +14,26 @@ def generate_location_id(block, zone, aisle, rack, shelf):
 
 class Inventory:
 
-    def search_product_name(self, query):
+    def search_product_name(self, query, by_what):
+        if by_what == "Product Name":
+            by = "Product name"
+        if by_what == "Product ID":
+            by = "Product id"
+        if by_what == "Vendor ID":
+            by = "Vendor id"
         with open(inventory_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='a', newline='') as search_file:
             reader = csv.DictReader(file)
             fieldnames = reader.fieldnames
             writer = csv.DictWriter(search_file, fieldnames=fieldnames)
             for row in reader:
-                if query.lower() in row["Product name"].lower():
+                if query.lower() in row[by].lower():
+                    writer.writeheader()
                     writer.writerow(row)
-        return None
+
+        with open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='r', newline='') as search_file:
+            reader = csv.reader(search_file)
+            return list(reader)
+
 
     def open_inventory_csv(self):
         with open(inventory_path, newline="") as f:
