@@ -3,7 +3,7 @@ import tkinter as ui
 from pathlib import Path
 from tkinter import ttk
 import csv
-from src.Pyri.database.inventoryDH import Product,Inventory
+from database.inventoryDH import Product,Inventory
 
 base_path = Path(__file__).parent.parent.parent.parent
 inventory_path = base_path / "data" / "database" / "inventory.csv"
@@ -64,6 +64,7 @@ class inventory_elements:
 
         self.drop_down_box = ttk.Combobox(self.view_search_window, width=27, font=('Arial', 13), state='readonly')
         self.drop_down_box['values'] = ('Product Name', 'Product ID', 'Vendor ID')
+        self.drop_down_box.set('Product Name')
         self.drop_down_box.place(relx=0.5, rely=0.5, anchor='w')
 
         self.confirm_button = ui.Button(self.view_search_window, text="CONFIRM",

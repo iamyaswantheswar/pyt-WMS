@@ -21,7 +21,7 @@ class Inventory:
             by = "Product id"
         if by_what == "Vendor ID":
             by = "Vendor id"
-        with open(inventory_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='a', newline='') as search_file:
+        with open(inventory_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='w', newline='') as search_file:
             reader = csv.DictReader(file)
             fieldnames = reader.fieldnames
             writer = csv.DictWriter(search_file, fieldnames=fieldnames)
