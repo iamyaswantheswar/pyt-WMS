@@ -7,8 +7,141 @@ import subprocess
 import sys
 import platform
 from PIL import Image,ImageTk
+import csv
+import shutil
 # Get the path to the current script
 base_path = Path(__file__).parent.parent.parent
+
+def check_database():
+    database_folder= base_path / "data" / "database"
+    with open(database_folder / "inventory.csv","r",newline="") as f , open(database_folder / "temp.csv","w",newline="") as temp :
+        reader=csv.DictReader(f)
+        inventory_structure= ['Product id','Product name','Quantity','Unit Cost price','Unit Sale price','Stock value','Location','Expiry Date','Vendor id']
+        if reader.fieldnames != inventory_structure:
+            print("inventory structure not proper")
+            dictwriter=csv.DictWriter(temp,fieldnames=inventory_structure)
+            dictwriter.writeheader()
+            writer=csv.writer(temp)
+            for i in reader:
+                writer.writerow(i)
+            f.close()
+            temp.close()
+            shutil.move(database_folder / "temp.csv",database_folder / "inventory.csv")
+    #Product id,Product name,Quantity,Unit Cost price,Unit Sale price,Stock value,Location,Expiry Date,Purchase Date,Purchase id,Vendor id
+    with open(database_folder / "purchases.csv","r",newline="") as f , open(database_folder / "temp.csv","w",newline="") as temp :
+        reader=csv.DictReader(f)
+        purchases_structure= ['Product id','Product name','Quantity','Unit Cost price','Unit Sale price','Stock value','Location','Expiry Date',"Purchase Date","Purchase id",'Vendor id']
+        if reader.fieldnames != purchases_structure:
+            print("Purchases structure not proper")
+            dictwriter=csv.DictWriter(temp,fieldnames=purchases_structure)
+            dictwriter.writeheader()
+            writer=csv.writer(temp)
+            for i in reader:
+                writer.writerow(i)
+            f.close()
+            temp.close()
+            shutil.move(database_folder / "temp.csv",database_folder / "purchases.csv")
+    #Product id,Product name,Sale quantity,Unit Cost price,Unit Sale price,Final sale price,Sale value,Net profit,Sale Date,Sale id,Customer id
+    with open(database_folder / "sales.csv","r",newline="") as f , open(database_folder / "temp.csv","w",newline="") as temp :
+        reader=csv.DictReader(f)
+        sales_structure= ['Product id','Product name','Sale quantity','Unit Cost price','Unit Sale price',"Final sale price",'Sale value','Net profit','Sale Date',"Sale id","Customer id"]
+        if reader.fieldnames != sales_structure:
+            print("sales structure not proper")
+            dictwriter=csv.DictWriter(temp,fieldnames=sales_structure)
+            dictwriter.writeheader()
+            writer=csv.writer(temp)
+            for i in reader:
+                writer.writerow(i)
+            f.close()
+            temp.close()
+            shutil.move(database_folder / "temp.csv",database_folder / "sales.csv")
+#Product id,Product name,Quantity,Vendor id
+    with open(database_folder / "demand.csv","r",newline="") as f , open(database_folder / "temp.csv","w",newline="") as temp :
+        reader=csv.DictReader(f)
+        demand_structure= ['Product id','Product name','Quantity','Vendor id']
+        if reader.fieldnames != demand_structure:
+            print("demand structure not proper")
+            dictwriter=csv.DictWriter(temp,fieldnames=demand_structure)
+            dictwriter.writeheader()
+            writer=csv.writer(temp)
+            for i in reader:
+                writer.writerow(i)
+            f.close()
+            temp.close()
+            shutil.move(database_folder / "temp.csv",database_folder / "demand.csv")
+#Vendor id,Vendor name,Stock Value,Purchase ids
+    with open(database_folder / "vendor.csv","r",newline="") as f , open(database_folder / "temp.csv","w",newline="") as temp :
+        reader=csv.DictReader(f)
+        vendor_structure= ['Vendor id','Vendor name','Stock Value','Purchase ids']
+        if reader.fieldnames != vendor_structure:
+            print("vendor structure not proper")
+            dictwriter=csv.DictWriter(temp,fieldnames=vendor_structure)
+            dictwriter.writeheader()
+            writer=csv.writer(temp)
+            for i in reader:
+                writer.writerow(i)
+            f.close()
+            temp.close()
+            shutil.move(database_folder / "temp.csv",database_folder / "vendor.csv")
+#Customer id,Customer name,Stock Value,Sale ids
+    with open(database_folder / "customer.csv","r",newline="") as f , open(database_folder / "temp.csv","w",newline="") as temp :
+        reader=csv.DictReader(f)
+        customer_structure= ['Customer id','Customer name','Stock Value','Sale ids']
+        if reader.fieldnames != customer_structure:
+            print("customer structure not proper")
+            dictwriter=csv.DictWriter(temp,fieldnames=customer_structure)
+            dictwriter.writeheader()
+            writer=csv.writer(temp)
+            for i in reader:
+                writer.writerow(i)
+            f.close()
+            temp.close()
+            shutil.move(database_folder / "temp.csv",database_folder / "customer.csv")
+
+    with open(database_folder / "stocklog" /"inventory_log.csv","r",newline="") as f , open(database_folder / "temp.csv","w",newline="") as temp :
+        reader=csv.DictReader(f)
+        inventory_structure= ['Product id','Product name','Quantity','Unit Cost price','Unit Sale price','Stock value','Location','Expiry Date','Vendor id']
+        if reader.fieldnames != inventory_structure:
+            print("inventory log  structure not proper")
+            dictwriter=csv.DictWriter(temp,fieldnames=inventory_structure)
+            dictwriter.writeheader()
+            writer=csv.writer(temp)
+            for i in reader:
+                writer.writerow(i)
+            f.close()
+            temp.close()
+            shutil.move(database_folder / "temp.csv",database_folder / "stocklog" /"inventory_log.csv")
+    with open(database_folder / "stocklog"/"purchases_log.csv","r",newline="") as f , open(database_folder / "temp.csv","w",newline="") as temp :
+        reader=csv.DictReader(f)
+        purchases_structure= ['Product id','Product name','Quantity','Unit Cost price','Unit Sale price','Stock value','Location','Expiry Date',"Purchase Date","Purchase id",'Vendor id']
+        if reader.fieldnames != purchases_structure:
+            print("Purchases log structure not proper")
+            dictwriter=csv.DictWriter(temp,fieldnames=purchases_structure)
+            dictwriter.writeheader()
+            writer=csv.writer(temp)
+            for i in reader:
+                writer.writerow(i)
+            f.close()
+            temp.close()
+            shutil.move(database_folder / "temp.csv",database_folder / "stocklog"/"purchases_log.csv")
+    #Product id,Product name,Sale quantity,Unit Cost price,Unit Sale price,Final sale price,Sale value,Net profit,Sale Date,Sale id,Customer id
+    with open(database_folder / "stocklog" /"sales_log.csv","r",newline="") as f , open(database_folder / "temp.csv","w",newline="") as temp :
+        reader=csv.DictReader(f)
+        sales_structure= ['Product id','Product name','Sale quantity','Unit Cost price','Unit Sale price',"Final sale price",'Sale value','Net profit','Sale Date',"Sale id","Customer id"]
+        if reader.fieldnames != sales_structure:
+            print("sales log structure not proper")
+            dictwriter=csv.DictWriter(temp,fieldnames=sales_structure)
+            dictwriter.writeheader()
+            writer=csv.writer(temp)
+            for i in reader:
+                writer.writerow(i)
+            f.close()
+            temp.close()
+            shutil.move(database_folder / "temp.csv",database_folder / "stocklog" /"sales_log.csv")
+            
+#checks for  any data vase headers are incorrect                   
+check_database()
+    
 ##functions
 def Check_admin():
     isadmin = False
