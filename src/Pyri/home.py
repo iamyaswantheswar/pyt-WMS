@@ -25,7 +25,7 @@ class cmds():
     def dashboard_ui(self):
         self.dest()
         print("user entered dashboard")
-        self.lable_frame = ui.Frame(self.home, bg="red")
+        self.lable_frame = ui.Frame(self.home, bg="#001F3F")
         self.lable_frame.pack(side="top", fill="both", expand=True)
         dashboard_elements.dashboard_ele(self,self.lable_frame)
         
@@ -33,28 +33,28 @@ class cmds():
     def inventory_ui(self):
         self.dest()
         print("user entered inventory")
-        self.lable_frame = ui.Frame(self.home,bg="green")
+        self.lable_frame = ui.Frame(self.home,bg="#001F3F")
         self.lable_frame.pack(side="top", fill="both", expand=True)
         inventory_elements.inventory_ele(self,self.lable_frame)
 
     def sales_ui(self):
         self.dest()
         print("user entered sales")
-        self.lable_frame = ui.Frame(self.home,bg="blue")
+        self.lable_frame = ui.Frame(self.home,bg="#001F3F")
         self.lable_frame.pack(side="top", fill="both", expand=True)
         sales_elements.sales_ele(self,self.lable_frame,self.home)
 
     def purchases_ui(self):
         self.dest()
         print("user entered purchases")
-        self.lable_frame = ui.Frame(self.home,bg="lightblue")
+        self.lable_frame = ui.Frame(self.home,bg="#001F3F")
         self.lable_frame.pack(side="top", fill="both", expand=True)
         purchases_elements.purchases_ele(self,self.lable_frame,self.home)
 
     def demand_ui(self):
         self.dest()
         print("user entered demand")
-        self.lable_frame = ui.Frame(self.home,bg="lightblue")
+        self.lable_frame = ui.Frame(self.home,bg="#001F3F")
         self.lable_frame.pack(side="top", fill="both", expand=True)
         demand_elements.demand_ele(self,self.lable_frame,home)
 
@@ -66,10 +66,10 @@ class cmds():
 
 class topbarelements:
     def __init__(self, label, topbar, command):
-        self.button = ui.Button(topbar,text=label,bg="black",fg="white",bd=0,font=("Times", 10, "bold"),anchor="w",command=command)
+        self.button = ui.Button(topbar,text=label,bg="#001F3F",fg="white",bd=0,font=("Times", 10, "bold"),anchor="w",command=command)
         self.button.config(width=10, height=2, borderwidth=0, highlightthickness=0)
-        self.button.bind("<Enter>", lambda e: self.button.config(bg="white", fg="black"))
-        self.button.bind("<Leave>", lambda e: self.button.config(bg="black", fg="white"))
+        self.button.bind("<Enter>", lambda e: self.button.config(bg="#001F3F", fg="black"))
+        self.button.bind("<Leave>", lambda e: self.button.config(bg="#001F3F", fg="white"))
 
     def place(self, x, y):
         self.button.place(relx=x, rely=y)
@@ -88,7 +88,7 @@ elif system == "Darwin":  # macOS
     home.attributes('-zoomed', True)
 else:
     home.attributes('-zoomed', True)
-topbar = ui.Frame(home, bg="black", height=50)
+topbar = ui.Frame(home, bg="#001F3F", height=50)
 topbar.pack(side="top", fill="x")
 topbar.pack_propagate(False)
 
