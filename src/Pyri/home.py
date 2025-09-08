@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 import platform
 from tkinter import messagebox
-
+from datetime import datetime
 from page_elements.purchases import *
 from page_elements.dashboard import *
 from page_elements.inventory import *
@@ -25,36 +25,36 @@ class cmds():
     def dashboard_ui(self):
         self.dest()
         print("user entered dashboard")
-        self.lable_frame = ui.Frame(self.home, bg="#001F3F")
+        self.lable_frame = ui.Frame(self.home, bg="#002E5D")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        dashboard_elements.dashboard_ele(self,self.lable_frame)
+        dashboard_elements.dashboard_ele(self,self.lable_frame,home)
         
 
     def inventory_ui(self):
         self.dest()
         print("user entered inventory")
-        self.lable_frame = ui.Frame(self.home,bg="#001F3F")
+        self.lable_frame = ui.Frame(self.home,bg="#002E5D")
         self.lable_frame.pack(side="top", fill="both", expand=True)
         inventory_elements.inventory_ele(self,self.lable_frame,self.home)
 
     def sales_ui(self):
         self.dest()
         print("user entered sales")
-        self.lable_frame = ui.Frame(self.home,bg="#001F3F")
+        self.lable_frame = ui.Frame(self.home,bg="#002E5D")
         self.lable_frame.pack(side="top", fill="both", expand=True)
         sales_elements.sales_ele(self,self.lable_frame,self.home)
 
     def purchases_ui(self):
         self.dest()
         print("user entered purchases")
-        self.lable_frame = ui.Frame(self.home,bg="#001F3F")
+        self.lable_frame = ui.Frame(self.home,bg="#002E5D")
         self.lable_frame.pack(side="top", fill="both", expand=True)
         purchases_elements.purchases_ele(self,self.lable_frame,self.home)
 
     def demand_ui(self):
         self.dest()
         print("user entered demand")
-        self.lable_frame = ui.Frame(self.home,bg="#001F3F")
+        self.lable_frame = ui.Frame(self.home,bg="#002E5D")
         self.lable_frame.pack(side="top", fill="both", expand=True)
         demand_elements.demand_ele(self,self.lable_frame,home)
 
@@ -66,9 +66,9 @@ class cmds():
 
 class topbarelements:
     def __init__(self, label, topbar, command):
-        self.button = ui.Button(topbar,text=label,bg="#001F3F",fg="white",bd=0,font=("Times", 10, "bold"),anchor="w",command=command)
+        self.button = ui.Button(topbar,text=label,bg="#001F3F",fg="white",bd=0,font=("Didot", 12, "bold"),anchor="w",command=command)
         self.button.config(width=10, height=2, borderwidth=0, highlightthickness=0)
-        self.button.bind("<Enter>", lambda e: self.button.config(bg="#001F3F", fg="black"))
+        self.button.bind("<Enter>", lambda e: self.button.config(bg="#FFFFFF", fg="black"))
         self.button.bind("<Leave>", lambda e: self.button.config(bg="#001F3F", fg="white"))
 
     def place(self, x, y):
@@ -96,11 +96,11 @@ topbar.pack_propagate(False)
 controller = cmds(home)
 
 # Create buttons
-elementpos = 0.07
+elementpos = 0.1
 pages = ["Dashboard", "Inventory", "Sales", "Purchases", "Demand"]
 for page in pages:
     btn = topbarelements(page, topbar, lambda p=page: controller.createcmd(p))
-    btn.place(elementpos, 0.05)
+    btn.place(elementpos, 0.0)
     elementpos += 0.15
 
 
