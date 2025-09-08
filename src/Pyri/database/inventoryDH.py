@@ -3,25 +3,44 @@ import shutil
 import datetime
 from pathlib import Path
 
-from src.Pyri.page_elements.inventory import inventory_elements
-
 base_path = Path(__file__).parent.parent.parent.parent
 
 inventory_path = base_path / 'data' / 'database' / 'inventory.csv'
+
 
 def generate_location_id(block, zone, aisle, rack, shelf):
     location_id = f"{block}-{zone}-{aisle}-{rack}-{shelf}"
     return location_id
 
-def search_product_name(query):
-    with open(base_path / 'data' / 'database' / 'purchases.csv', mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='a', newline='') as search_file:
-        reader = csv.DictReader(file)
-        fieldnames = reader.fieldnames
-        writer = csv.DictWriter(search_file, fieldnames=fieldnames)
-        for row in reader:
-            if query.lower() in row["Product name"].lower():
-                writer.writerow(row)
-    return None
+class Inventory:
+
+    def search_product_name(self, query, by_what):
+        if by_what == "Product Name":
+            by = "Product name"
+        if by_what == "Product ID":
+            by = "Product id"
+        if by_what == "Vendor ID":
+            by = "Vendor id"
+        with open(inventory_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='w', newline='') as search_file:
+            reader = csv.DictReader(file)
+            fieldnames = reader.fieldnames
+            writer = csv.DictWriter(search_file, fieldnames=fieldnames)
+            for row in reader:
+                if query.lower() in row[by].lower():
+                    writer.writeheader()
+                    writer.writerow(row)
+
+        with open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='r', newline='') as search_file:
+            reader = csv.reader(search_file)
+            return list(reader)
+
+
+    def open_inventory_csv(self):
+        with open(inventory_path, newline="") as f:
+            self.reader = csv.reader(f)
+            return list(self.reader)
+
+
 
 class Product:
 

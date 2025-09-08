@@ -35,7 +35,7 @@ class cmds():
         print("user entered inventory")
         self.lable_frame = ui.Frame(self.home,bg="#001F3F")
         self.lable_frame.pack(side="top", fill="both", expand=True)
-        inventory_elements.inventory_ele(self,self.lable_frame)
+        inventory_elements.inventory_ele(self,self.lable_frame,self.home)
 
     def sales_ui(self):
         self.dest()

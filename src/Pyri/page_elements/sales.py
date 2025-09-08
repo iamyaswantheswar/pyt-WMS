@@ -68,13 +68,19 @@ class sales_elements:
                 self.tree.configure(xscrollcommand=self.hbar.set,yscrollcommand=self.vbar.set)
                 self.hbar.grid(row=1,column=1,sticky="ew")
                 self.vbar.grid(row=0,column=2,sticky="ns")
+                self.tree.tag_configure("oddrow",background="white")
+                self.tree.tag_configure("evenrow",background="lightblue")
                     #configure coloumns
                 for col in data[0]:
                     self.tree.heading(col,text=col)
                     self.tree.column(col,anchor="center",width=120)
-                    #inserting rows
+                self.count=0
                 for row_data in data[1:]:
-                    self.tree.insert("","end",values=row_data)
+                    self.count+=1
+                    if self.count % 2 == 0 :
+                        self.tree.insert("","end",values=row_data,tags=("evenrow",))
+                    else:
+                        self.tree.insert("","end",values=row_data,tags=("oddrow",))
                 frame.grid_rowconfigure(row,weight=1)
                 frame.grid_columnconfigure(column,weight=1)
                 return self.tree

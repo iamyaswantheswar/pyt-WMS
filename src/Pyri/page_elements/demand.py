@@ -39,13 +39,19 @@ class demand_elements:
                 self.tree.configure(xscrollcommand=self.hbar.set,yscrollcommand=self.vbar.set)
                 self.hbar.grid(row=2,column=1,sticky="ew")
                 self.vbar.grid(row=1,column=2,sticky="ns")
+                self.tree.tag_configure("oddrow",background="white")
+                self.tree.tag_configure("evenrow",background="lightblue")
                     #configure coloumns
                 for col in data[0]:
                     self.tree.heading(col,text=col)
                     self.tree.column(col,anchor="center",width=120)
-                    #inserting rows
+                self.count=0
                 for row_data in data[1:]:
-                    self.tree.insert("","end",values=row_data)
+                    self.count+=1
+                    if self.count % 2 == 0 :
+                        self.tree.insert("","end",values=row_data,tags=("evenrow",))
+                    else:
+                        self.tree.insert("","end",values=row_data,tags=("oddrow",))
                 frame.grid_rowconfigure(row,weight=1)
                 frame.grid_columnconfigure(column,weight=1)
                 return self.tree
@@ -63,38 +69,38 @@ class demand_elements:
                 self.create_demand_window=ui.Toplevel(home)
                 self.create_demand_window.title("Add Product to Warehouse")
                 self.create_demand_window.configure(bg="white")
-                self.create_demand_window.geometry("500x500")
+                self.create_demand_window.geometry("500x300")
                 
                 
                 self.label_product_name = ui.Label(self.create_demand_window, text="Product Name",bg="white",font=('Arial',10))
-                self.label_product_name.place(relx=0.05,rely=0.02,anchor="w")
+                self.label_product_name.place(relx=0.05,rely=0.05,anchor="w")
                         
                 self.entry_product_name=ui.Entry(self.create_demand_window, width=40,bd=2,font=('Arial',13))
-                self.entry_product_name.place(relx=0.05, rely=0.052, anchor="w")
+                self.entry_product_name.place(relx=0.05, rely=0.15, anchor="w")
                         
                 self.label_product_id = ui.Label(self.create_demand_window, text="Product ID",bg="white",font=('Arial',10))
-                self.label_product_id.place(relx=0.05,rely=0.12,anchor="w")
+                self.label_product_id.place(relx=0.05,rely=0.25,anchor="w")
 
                 self.entry_product_id=ui.Entry(self.create_demand_window, width=40,bd=2,font=('Arial',13))
-                self.entry_product_id.place(relx=0.05, rely=0.152, anchor='w')
+                self.entry_product_id.place(relx=0.05, rely=0.35, anchor='w')
                         
                 self.label_product_quantity = ui.Label(self.create_demand_window, text="Product Quantity",bg="white",font=('Arial',10))
-                self.label_product_quantity.place(relx=0.05,rely=0.22,anchor="w")
+                self.label_product_quantity.place(relx=0.05,rely=0.45,anchor="w")
 
                 self.entry_product_quantity=ui.Entry(self.create_demand_window, width=40,bd=2,font=('Arial',13))
-                self.entry_product_quantity.place(relx=0.05, rely=0.252, anchor='w')
+                self.entry_product_quantity.place(relx=0.05, rely=0.55, anchor='w')
 
                 self.label_product_vendor=ui.Label(self.create_demand_window,text="Select Vendor id",bg="white",font=('Arial',11))
-                self.label_product_vendor.place(relx=0.05,rely=0.62,anchor="w")
+                self.label_product_vendor.place(relx=0.05,rely=0.65,anchor="w")
 
                 self.vendor_list= VendorDataHandler.GetVendorIds(self)
                 self.product_vendorid=ui.StringVar(value="Select Vendor")
                 self.option_product_vendorid=ui.OptionMenu(self.create_demand_window,self.product_vendorid,*self.vendor_list)
-                self.option_product_vendorid.place(relx=0.05,rely=0.67,anchor="w")
+                self.option_product_vendorid.place(relx=0.05,rely=0.75,anchor="w")
                 self.option_product_vendorid.configure(bg="white")
 
                 self.confirm_button=ui.Button(self.create_demand_window,text="CONFIRM", command = lambda : demand_elements.entry_check(self,frame,home),bg="white",width= 25,font=("Arial",10,"bold"))
-                self.confirm_button.place(relx=0.5, rely=0.9, anchor="center")
+                self.confirm_button.place(relx=0.5, rely=0.95, anchor="center")
 
         def entry_check(self,frame,home):
                 self.inventory_csv_filepath= base_path / "data" / "database" / "inventory.csv"
@@ -171,23 +177,23 @@ class demand_elements:
                 self.modify_demand_window=ui.Toplevel(home)
                 self.modify_demand_window.title("Modify demand")
                 self.modify_demand_window.configure(bg="white")
-                self.modify_demand_window.geometry("500x500")
+                self.modify_demand_window.geometry("500x200")
                 
                         
                 self.label_product_id = ui.Label(self.modify_demand_window, text="Product ID",bg="white",font=('Arial',10))
-                self.label_product_id.place(relx=0.05,rely=0.12,anchor="w")
+                self.label_product_id.place(relx=0.05,rely=0.1,anchor="w")
 
                 self.entry_product_id=ui.Entry(self.modify_demand_window, width=40,bd=2,font=('Arial',13))
-                self.entry_product_id.place(relx=0.05, rely=0.152, anchor='w')
+                self.entry_product_id.place(relx=0.05, rely=0.25, anchor='w')
                         
                 self.label_product_quantity = ui.Label(self.modify_demand_window, text="Total Demand Quantity",bg="white",font=('Arial',10))
-                self.label_product_quantity.place(relx=0.05,rely=0.22,anchor="w")
+                self.label_product_quantity.place(relx=0.05,rely=0.5,anchor="w")
 
                 self.entry_product_quantity=ui.Entry(self.modify_demand_window, width=40,bd=2,font=('Arial',13))
-                self.entry_product_quantity.place(relx=0.05, rely=0.252, anchor='w')
+                self.entry_product_quantity.place(relx=0.05, rely=0.65, anchor='w')
 
                 self.confirm_button=ui.Button(self.modify_demand_window,text="CONFIRM", command = lambda : demand_elements.modify_data_check(self,frame,home),bg="white",width= 25,font=("Arial",10,"bold"))
-                self.confirm_button.place(relx=0.5, rely=0.85, anchor="center")
+                self.confirm_button.place(relx=0.5, rely=0.9, anchor="center")
                 
         def modify_data_check(self,frame,home):
                 try:
@@ -221,16 +227,16 @@ class demand_elements:
 ###################################################### Delete demand ######################################
         def delete_demand(self,frame,home):
                 self.delete_demand_window=ui.Toplevel(home)
-                self.delete_demand_window.title("Modify demand")
+                self.delete_demand_window.title("Delete demand")
                 self.delete_demand_window.configure(bg="white")
-                self.delete_demand_window.geometry("500x500")
+                self.delete_demand_window.geometry("450x150")
                 
                         
                 self.label_product_id = ui.Label(self.delete_demand_window, text="Product ID",bg="white",font=('Arial',10))
-                self.label_product_id.place(relx=0.05,rely=0.12,anchor="w")
+                self.label_product_id.place(relx=0.05,rely=0.25,anchor="w")
 
                 self.entry_product_id=ui.Entry(self.delete_demand_window, width=40,bd=2,font=('Arial',13))
-                self.entry_product_id.place(relx=0.05, rely=0.152, anchor='w')
+                self.entry_product_id.place(relx=0.05, rely=0.4, anchor='w')
                         
 
                 self.confirm_button=ui.Button(self.delete_demand_window,text="CONFIRM", command = lambda : demand_elements.delete_data_check(self,frame,home),bg="white",width= 25,font=("Arial",10,"bold"))
