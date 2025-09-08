@@ -1,7 +1,4 @@
 import tkinter as ui
-import numpy as np
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import csv
 from pathlib import Path
 import time
@@ -11,7 +8,7 @@ base_path = Path(__file__).parent.parent.parent.parent
 class dashboard_elements:
     def dashboard_ele(self, frame,home):
         frame.grid_columnconfigure(0,minsize=20)
-        frame.grid_rowconfigure(0,minsize=45)
+        frame.grid_rowconfigure(0,weight=1)
 
         frame.grid_columnconfigure(1,minsize=250)
         frame.grid_rowconfigure(1,minsize=150)
@@ -31,6 +28,8 @@ class dashboard_elements:
 
         frame.grid_rowconfigure(7,minsize=150)
 
+        frame.grid_rowconfigure(8,weight=1)
+
 
         
 
@@ -43,34 +42,75 @@ class dashboard_elements:
             self.time_lable.configure(text =self.current_time)
             self.frame_time.after(1000,update_time)
 
-
-        self.time_lable=ui.Label(self.frame_time,font=("Times",20,"bold"),bg="white")
-        self.time_lable.place(relx=0.5,rely=0.5,anchor="center")
+        self.time_label_title=ui.Label(self.frame_time,text="Hola Manager :)",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+        
+        self.time_lable=ui.Label(self.frame_time,font=("Didot",18,"bold"),bg="white")
+        self.time_lable.place(relx=0.05,rely=0.6)
 
         self.frame_date = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_date.grid(row=1,column=3,sticky="nsew")
 
-        self.current_date=datetime.now().strftime('%a, %b %d, %Y')
-        self.date_lable=ui.Label(self.frame_date,text=self.current_date,font=("Times",20,"bold"),bg="white")
-        self.date_lable.place(relx=0.5,rely=0.7,anchor="center")
+        self.date_lable_title=ui.Label(self.frame_date,text="Today is",bg="white",font=("Didot",20,"bold")).place(relx=0.05,rely=0.1)
+
+        self.current_date=datetime.now().strftime('%b %d %Y %a')
+        self.date_lable=ui.Label(self.frame_date,text=self.current_date,font=("Didot",18,"bold"),bg="white")
+        self.date_lable.place(relx=0.05,rely=0.6)
 
         self.frame_tprofit = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_tprofit.grid(row=3,column=1,sticky="nsew")
 
+        self.tprofit_label_title=ui.Label(self.frame_tprofit,text="Todays profit ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.tprofit_lable=ui.Label(self.frame_tprofit ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
         self.frame_tsales = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_tsales.grid(row=3,column=3,sticky="nsew")
+
+        self.tsales_label_title=ui.Label(self.frame_tsales,text="Todays sales ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.tsales_lable=ui.Label(self.frame_tsales,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
 
         self.frame_mprofit = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_mprofit.grid(row=5,column=1,sticky="nsew")
 
+        self.tprofit_label_title=ui.Label(self.frame_mprofit,text="Months profit ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.mprofit_lable=ui.Label(self.frame_mprofit ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
         self.frame_msales = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_msales.grid(row=5,column=3,sticky="nsew")
+
+        self.msales_label_title=ui.Label(self.frame_msales,text="Month sales ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.msales_lable=ui.Label(self.frame_msales ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
 
         self.frame_stockvalue = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_stockvalue.grid(row=7,column=1,sticky="nsew")
 
+        self.stockvalue_title=ui.Label(self.frame_stockvalue,text="Total Stock Value ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.stockvalue_lable=ui.Label(self.frame_stockvalue ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
         self.frame_demand = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_demand.grid(row=7,column=3,sticky="nsew")
+
+        self.demand_title=ui.Label(self.frame_demand,text="Demands",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.deamand_lable=ui.Label(self.frame_demand ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
         update_time()
 
