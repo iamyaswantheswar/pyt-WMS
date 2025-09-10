@@ -1,2 +1,3 @@
 Product id,Product name,Quantity,Unit Cost price,Unit Sale price,Stock value,Location,Expiry Date,Vendor id
-
+PRD001,RAMU,123,10,20,1230,23233,24-09-2025,VEND01
+PRD002,RAJU,200,30,40,6000,33234,23-09-2025,VEND01
