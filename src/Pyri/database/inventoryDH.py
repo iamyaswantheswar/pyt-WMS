@@ -1,17 +1,23 @@
 import csv
-import shutil
+#import shutil
 import datetime
+from datetime import datetime
 from pathlib import Path
+#import pandas as pd
+
+from numpy.f2py.auxfuncs import isstring
 
 base_path = Path(__file__).parent.parent.parent.parent
 
 inventory_path = base_path / 'data' / 'database' / 'inventory.csv'
 
-#display_inventory_path = base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv'
+temp_inventory_path = base_path / 'data' / 'database' / 'temp_memory'
+
+display_csv_path = temp_inventory_path / 'display_inventory.csv'
 
 
 def generate_location_id(block, zone, aisle, rack, shelf):
-    location_id = f"{block}-{zone}-{aisle}-{rack}-{shelf}"
+    location_id = f"{block}{zone}{aisle}{rack}{shelf}"
     return location_id
 
 class Inventory:
@@ -23,268 +29,114 @@ class Inventory:
             by = "Product id"
         if by_what == "Vendor ID":
             by = "Vendor id"
-        with open(display_inventory_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='w', newline='') as search_file:
+        with open(display_csv_path, mode='r', newline='') as file:
             reader = csv.DictReader(file)
-            writer = csv.DictWriter(search_file, fieldnames=reader.fieldnames)
             to_write = []
             for row in reader:
                 if query.lower() in row[by].lower():
                     to_write.append(row)
-            writer.writeheader()
-            writer.writerows(to_write)
-
-        with open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='r', newline='') as search_file:
-            reader = csv.reader(search_file)
-            return list(reader)
-
-
-    def open_inventory_csv(self):
-        with open(inventory_path, newline="") as f:
-            reader = csv.reader(f)
-            return list(reader)
-
-    def filter_inventory_location(self,block,zone,aisle,rack,shelf,filter_usage = False):
-        def check_csv_duplicate(row):
-            with open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='r', newline='') as filtered_file:
-                reader = csv.DictReader(filtered_file)
-                rows = list(reader)
-                if row in rows:
-                    return True
-
-        if filter_usage:
-            with open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='r', newline='') as filtered_file:
-                reader = csv.DictReader(filtered_file)
-                rows = list(reader)
-                fieldnames = reader.fieldnames
-                to_write = []
-                for row in rows:
-                    location_str = str(row["Location"])
-                    if location_str[0] == block:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-                    if location_str[1] == zone:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-                    if location_str[2] == aisle:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-                    if location_str[3] == rack:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-                    if location_str[4] == shelf:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-
-            with open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='w', newline='') as filtered_file:
-                writer = csv.DictWriter(filtered_file, fieldnames=fieldnames)
+            with open(display_csv_path, mode='w', newline='') as search_file:
+                writer = csv.DictWriter(search_file, fieldnames=reader.fieldnames)
                 writer.writeheader()
                 writer.writerows(to_write)
 
-        else:
-            with open(inventory_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='w', newline='') as filter_file:
-                reader = csv.DictReader(file)
-                rows = list(reader)
-                to_write = []
-                for row in rows:
-                    location_str = str(row["Location"])
-                    if location_str[0] == block:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-                    if location_str[1] == zone:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-                    if location_str[2] == aisle:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-                    if location_str[3] == rack:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-                    if location_str[4] == shelf:
-                        if not check_csv_duplicate(row):
-                            to_write.append(row)
-                writer = csv.DictWriter(filter_file, fieldnames=reader.fieldnames)
-                writer.writeheader()
-                writer.writerow(row)
+        with open(display_csv_path, mode='r', newline='') as search_file:
+            reader = csv.reader(search_file)
+            return list(reader)
+
+    #Opens the inventory csv file and copies it to display_inventory.csv (this is the csv that is displayed in the inventory window)
+    def open_inventory_csv(self):
+        with open(inventory_path, mode='r', newline='') as file, open(display_csv_path, mode='w', newline='') as display_file:
+            reader = csv.DictReader(file)
+            writer = csv.DictWriter(display_file, fieldnames=reader.fieldnames)
+            writer.writeheader()
+            writer.writerows(reader)
+        with open(display_csv_path, newline="") as f:
+            reader = csv.reader(f)
+            return list(reader)
+
+    def filter_inventory_location(self,block,zone,aisle,rack,shelf):
+        location_id = generate_location_id(block,zone,aisle,rack,shelf)
+
+        def find_location(row,to_write):
+            location_str = str(row["Location"])
+            index = 0
+            for i in location_str:
+                index += 1
+                if i.isdigit():
+                    continue
+                else:
+                    location_str.split(i)
+                    break
+            if row["Location"][:index] == location_id:
+                to_write.append(row)
+
+        with open(display_csv_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='w', newline='') as filter_file:
+            reader = csv.DictReader(file)
+            rows = list(reader)
+            to_write = []
+            for row in rows:
+                find_location(row,to_write)
+            writer = csv.DictWriter(filter_file, fieldnames=reader.fieldnames)
+            writer.writeheader()
+            writer.writerows(to_write)
 
         with open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='r', newline='') as filter_file:
             reader = csv.reader(filter_file)
             return list(reader)
 
+    def filter_inventory_expiry_date(self, start_date, end_date):
+        start = datetime.strptime(start_date, "%d-%m-%Y")
+        end = datetime.strptime(end_date, "%d-%m-%Y")
 
+        with open(display_csv_path, mode='r', newline='') as file:
+            reader = csv.DictReader(file)
+            rows = list(reader)
+            filtered = []
+            for row in rows:
+                if start <= datetime.strptime(row['Expiry Date'], "%d-%m-%Y") <= end:
+                    filtered.append(row)
+            with open(display_csv_path, mode='w', newline='') as filter_file:
+                writer = csv.DictWriter(filter_file, fieldnames=reader.fieldnames)
+                writer.writeheader()
+                writer.writerows(filtered)
+        with open(display_csv_path, mode='r', newline='') as filter_file:
+            reader = csv.reader(filter_file)
+            return list(reader)
 
-''''
-class Product:
-
-    def __init__(self, product_id, product_name='', quantity=0, unit_cost_price=0, unit_sale_price=0, stock_value=0,
-                 location='', expiry_date='', new=False):
-        # give only product_id if you want to fetch the product details from the database
-        # give all the details if you want to create a new product and set new = True
-        self.product_id = product_id
-        self.inventory_path = inventory_path
-        if not new:
-            with open(self.inventory_path, mode='r', newline='') as file:
+    def sort_inventory(self, sort_by, sort_type):
+        if sort_by == "Expiry Date":
+            with open(display_csv_path, mode='r', newline='') as file:
                 reader = csv.DictReader(file)
-                for row in reader:
-                    if row["id"] == self.product_id:
-                        self.product_id = row["Product id"]
-                        self.product_name = row["Product name"]
-                        self.quantity = int(row["Quantity"])
-                        self.u_cost_price = float(row["Unit Cost price"])
-                        self.u_sale_price = float(row["Unit Sale price"])
-                        self.stock_value = float(row["Stock value"])
-                        self.location = row["Location"]
-                        self.expiry_date = row["Expiry Date"]
-                        break
-
-        elif new:
-            self.new_product(product_id, product_name, quantity, unit_cost_price, unit_sale_price, stock_value,
-                             location, expiry_date)
+                rows = list(reader)
+                if sort_type == "Ascending":
+                    sort_type_bool = False
+                else:
+                    sort_type_bool = True
+                sorted_rows = sorted(rows, key=lambda x: datetime.strptime(x['Expiry Date'], "%d-%m-%Y"), reverse=sort_type_bool)
+                with open(display_csv_path, mode='w', newline='') as sort_file:
+                    writer = csv.DictWriter(sort_file, fieldnames=reader.fieldnames)
+                    writer.writeheader()
+                    writer.writerows(sorted_rows)
 
         else:
-            raise ValueError(f"Purchase with ID {self.product_id} not found.")
+            with open(display_csv_path, mode='r', newline='') as file:
+                reader = csv.DictReader(file)
+                rows = list(reader)
+                if sort_type == "Ascending":
+                    sort_type_bool = False
+                else:
+                    sort_type_bool = True
+                if sort_by == "Product Name":
+                    sort_by = "Product name"
+                sorted_rows = sorted(rows, key=lambda x: x[sort_by], reverse=sort_type_bool)
+                with open(display_csv_path, mode='w', newline='') as sort_file:
+                    writer = csv.DictWriter(sort_file, fieldnames=reader.fieldnames)
+                    writer.writeheader()
+                    writer.writerows(sorted_rows)
 
-    def backup_csv(self):
-        # backup the products.csv file to history folder with timestamp in the name
-        file_path = self.inventory_path
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        backup_name = f"{file_path.stem}_{timestamp}.csv"
-        shutil.copy2(file_path, f"{file_path.parent}/history/products/{backup_name}")
-
-    def new_product(self, product_id, product_name, quantity, unit_cost_price, unit_sale_price, stock_value,
-                             location, expiry_date):
-
-        def error_check():
-            try:
-                if int(quantity) < 0:
-                    raise ValueError("Quantity cannot be negative")
-                if float(unit_cost_price) < 0:
-                    raise ValueError("Unit cost price cannot be negative")
-                if float(unit_sale_price) < 0:
-                    raise ValueError("Unit sale price cannot be negative")
-                if float(stock_value) < 0:
-                    raise ValueError("Stock value cannot be negative")
-            except ValueError as e:
-                raise ValueError(e)
-
-        error_check()
-
-        data = [
-            [
-             product_id,
-             product_name,
-             quantity,
-             unit_cost_price,
-             unit_sale_price,
-             stock_value,
-             location,
-             expiry_date
-            ]
-        ]
-
-        self.backup_csv()
-
-        with open(self.inventory_path, 'a', newline='') as file:
-            writer = csv.DictWriter(file)
-            writer.writerows(data)
-
-    def update_quantity(self, quantity, WriteToCSV=False):
-        self.quantity_in_stock += quantity
-        if WriteToCSV:
-            self.write_to_csv()
-
-    def update_price(self, price, WriteToCSV=False):
-        self.price = price
-        if WriteToCSV:
-            self.write_to_csv()
+        with open(display_csv_path, mode='r', newline='') as sort_file:
+            reader = csv.reader(sort_file)
+            return list(reader)
 
 
-    def generate_stock_id(self, loc):
-        return f"{self.id}@{loc}"
-
-
-    def update_location(self, location, WriteToCSV=False):
-        self.locations = location
-        if WriteToCSV:
-            self.write_to_csv()
-
-    def write_to_csv(self):
-        self.backup_csv()
-        with open(self.inventory_path, mode='r', newline='') as file:
-            reader = csv.DictReader(file)
-            rows = list(reader)
-            for row in rows:
-                if row["id"] == self.id:
-                    row["id"] = self.id
-                    row["name"] = self.name
-                    row["category"] = self.category
-                    row["dimensions"] = self.dimensions
-                    row["weight"] = self.weight
-                    row["quantity_in_stock"] = self.quantity_in_stock
-                    row["price"] = self.price
-                    row["locations"] = self.locations
-                    with open(self.inventory_path, mode='w', newline='') as file2:
-                        writer = csv.DictWriter(file2, fieldnames=["id", "name", "category", "dimensions", "weight",
-                                                                   "quantity_in_stock", "price", "locations"])
-                        writer.writeheader()
-                        writer.writerows(rows)
-
-
-
-
-class Stock:
-
-    def __init__(self, stock_id, location, product, quantity, expiry):
-        self.stock_id = stock_id
-        self.product = product
-        self.location = location
-        self.quantity = quantity
-        self.expiry = expiry
-
-    def backup_csv(self):
-        file_path = base_path / "data" / "database" / "stock.csv"
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        backup_name = f"{file_path.stem}_{timestamp}.csv"
-        shutil.copy2(file_path, f"{file_path.parent}/history/stock/{backup_name}")
-
-    def increase_stock(self, quantity, WriteToCSV=False):
-        try:
-            if quantity < 0:
-                raise ValueError
-            else:
-                self.quantity += quantity
-                if WriteToCSV:
-                    self.write_to_csv()
-                    self.product.update_quantity(quantity, WriteToCSV=WriteToCSV)
-        except ValueError:
-            raise ValueError("Quantity must be a positive integer")
-
-    def decrease_stock(self, quantity, WriteToCSV=False):
-        try:
-            if quantity < 0:
-                raise ValueError
-            else:
-                self.quantity -= quantity
-                if WriteToCSV:
-                    self.write_to_csv()
-                    self.product.update_quantity(-quantity, WriteToCSV=WriteToCSV)
-        except ValueError:
-            raise ValueError("Quantity must be a positive integer")
-
-    def write_to_csv(self):
-        self.backup_csv()
-        with open(base_path / "data" / "database" / "stock.csv", 'r', newline='') as file:
-            reader = csv.DictReader(file)
-            rows = list(reader)
-            for row in rows:
-                if row["stock_id"] == self.stock_id:
-                    row["stock_id"] = self.stock_id
-                    row["location"] = self.location
-                    row["product"] = self.product
-                    row["quantity"] = self.quantity
-                    row["expiry"] = self.expiry
-                    with open(base_path / "data" / "database" / "stock.csv", mode='w', newline='') as file2:
-                        writer = csv.DictWriter(file2,
-                                                fieldnames=["stock_id", "location", "product", "quantity", "expiry"])
-                        writer.writeheader()
-                        writer.writerows(rows)
-'''

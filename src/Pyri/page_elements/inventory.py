@@ -1,6 +1,7 @@
 import tkinter as ui
 from pathlib import Path
 from tkinter import ttk
+from tkcalendar import Calendar
 import csv
 from database.inventoryDH import  Inventory
 
@@ -52,7 +53,25 @@ class inventory_elements:
                                        command=lambda: inventory_elements.filter_by_location_window(self, frame, home),
                                        width=25,
                                        font=("Arial", 10, "bold"))
-        self.filter_location_button.place(relx=0.02, rely=0.4)
+        self.filter_location_button.place(relx=0.02, rely=0.3)
+
+        self.filter_expiry_date_button = ui.Button(frame, text="Filter by Expiry Date",
+                                       command=lambda: inventory_elements.filter_by_expiry_date_window(self, frame, home),
+                                       width=25,
+                                       font=("Arial", 10, "bold"))
+        self.filter_expiry_date_button.place(relx=0.02, rely=0.4)
+
+        self.refresh_filter_button = ui.Button(frame, text="Refresh Filter",
+                                       command=lambda: inventory_elements.refresh_filter(self, frame, home),
+                                       width=25,
+                                       font=("Arial", 10, "bold"))
+        self.refresh_filter_button.place(relx=0.02, rely=0.5)
+
+        self.sort_button = ui.Button(frame, text="Sort",
+                                       command=lambda: inventory_elements.sort_window(self, frame, home),
+                                       width=25,
+                                       font=("Arial", 10, "bold"))
+        self.sort_button.place(relx=0.02, rely=0.7)
 
         self.csv_data = Inventory.open_inventory_csv(self)
         inventory_elements.display_csv(self, frame, self.csv_data, 0, 1)
@@ -91,7 +110,7 @@ class inventory_elements:
         self.search_result_window.configure(bg="white")
 
         self.result_data = Inventory.search_product_name(self, query, by_what)
-
+        print(f"Search result for {query}")
         inventory_elements.display_search_result(self, self.search_result_window, self.result_data, 0, 0)
 
     def display_search_result(self, window, data, row, column, colspan=2):
@@ -119,7 +138,7 @@ class inventory_elements:
             self.tree.insert("", "end", values=row_data)
         return self.tree
 
-    ################################## Filter ######################################
+    ########################################### Filter Location #######################################
 
     def filter_by_location_window(self, frame, home):
         self.view_filter_by_location_window = ui.Toplevel(home)
@@ -131,35 +150,35 @@ class inventory_elements:
         self.product_blocks = ui.StringVar(value="Select Block")
         self.option_product_location_block = ui.OptionMenu(self.view_filter_by_location_window, self.product_blocks,
                                                            *self.product_location_blocks)
-        self.option_product_location_block.place(relx=0.05, rely=0.39, anchor="w")
+        self.option_product_location_block.place(relx=0.05, rely=0.3, anchor="w")
         self.option_product_location_block.configure(bg="white")
 
         self.product_location_zones = ["Zone 1", 'Zone 2', 'Zone 3', "Zone 4"]
         self.product_zones = ui.StringVar(value="Select Zone")
         self.option_product_location_zone = ui.OptionMenu(self.view_filter_by_location_window, self.product_zones,
                                                           *self.product_location_zones)
-        self.option_product_location_zone.place(relx=0.22, rely=0.39, anchor="w")
+        self.option_product_location_zone.place(relx=0.22, rely=0.3, anchor="w")
         self.option_product_location_zone.configure(bg="white")
 
         self.product_location_aisles = ["Aisle 1", 'Aisle 2', 'Aisle 3', "Aisle 4"]
         self.product_aisles = ui.StringVar(value="Select Aisle")
         self.option_product_location_aisle = ui.OptionMenu(self.view_filter_by_location_window, self.product_aisles,
                                                            *self.product_location_aisles)
-        self.option_product_location_aisle.place(relx=0.42, rely=0.39, anchor="w")
+        self.option_product_location_aisle.place(relx=0.42, rely=0.3, anchor="w")
         self.option_product_location_aisle.configure(bg="white")
 
         self.product_location_racks = ["Rack 1", 'Rack 2', 'Rack 3', "Rack 4"]
         self.product_racks = ui.StringVar(value="Select Rack")
         self.option_product_location_rack = ui.OptionMenu(self.view_filter_by_location_window, self.product_racks,
                                                           *self.product_location_racks)
-        self.option_product_location_rack.place(relx=0.62, rely=0.39, anchor="w")
+        self.option_product_location_rack.place(relx=0.62, rely=0.3, anchor="w")
         self.option_product_location_rack.configure(bg="white")
 
         self.product_location_shelfs = ["Shelf 1", 'Shelf 2', 'Shelf 3', "Shelf 4"]
         self.product_shelfs = ui.StringVar(value="Select Shelf")
         self.option_product_location_shelf = ui.OptionMenu(self.view_filter_by_location_window, self.product_shelfs,
                                                            *self.product_location_shelfs)
-        self.option_product_location_shelf.place(relx=0.82, rely=0.39, anchor="w")
+        self.option_product_location_shelf.place(relx=0.82, rely=0.3, anchor="w")
         self.option_product_location_shelf.configure(bg="white")
 
         self.confirm_button = ui.Button(self.view_filter_by_location_window, text="CONFIRM",
@@ -167,7 +186,7 @@ class inventory_elements:
                                                                                                             home),
                                         bg="white",
                                         width=25, font=("Arial", 10, "bold"))
-        self.confirm_button.place(relx=0.5, rely=0.95, anchor="center")
+        self.confirm_button.place(relx=0.5, rely=0.85, anchor="center")
 
     def filter_by_location_result_window(self, frame, home):
         self.view_filter_by_location_window.destroy()
@@ -177,7 +196,104 @@ class inventory_elements:
         self.product_rack = self.product_racks.get()[-1]
         self.product_shelf = self.product_shelfs.get()[-1]
         self.product_location = self.product_block + self.product_zone + self.product_aisle + self.product_rack + self.product_shelf
-        self.csv_data = Inventory.filter_inventory_location(self,self.product_block,self.product_zone,self.product_aisle,self.product_rack,self.product_shelf,filter_usage=filter_usage_location)
+        print(f"filtered location: {self.product_location}")
+        self.csv_data = Inventory.filter_inventory_location(self,self.product_block,self.product_zone,self.product_aisle,self.product_rack,self.product_shelf)
         self.tree.destroy()
         inventory_elements.display_csv(self, frame, self.csv_data, 0, 1)
         filter_usage_location = True
+
+
+
+
+################################################### Filter Expiry Date ###################################################
+
+    def filter_by_expiry_date_window(self, frame, home):
+        self.view_filter_by_expiry_date_window = ui.Toplevel(home)
+        self.view_filter_by_expiry_date_window.title("Filter Inventory by Expiry Date")
+        self.view_filter_by_expiry_date_window.configure(bg="white")
+        self.view_filter_by_expiry_date_window.geometry("800x150")
+
+        self.start_product_exp = ui.Entry(self.view_filter_by_expiry_date_window, width=40, bd=2, font=('Arial', 13))
+        self.start_product_exp.place(relx=0.02, rely=0.40, anchor='w')
+
+        self.end_product_exp = ui.Entry(self.view_filter_by_expiry_date_window, width=40, bd=2, font=('Arial', 13))
+        self.end_product_exp.place(relx=0.5, rely=0.40, anchor='w')
+
+        self.cal_button_start = ui.Button(self.view_filter_by_expiry_date_window, text="Choose date",
+                                    command=lambda: inventory_elements.open_calendar_start(self, home), bg="white")
+        self.cal_button_start.place(relx=0.02, rely=0.60, anchor='w')
+
+        self.cal_button_end = ui.Button(self.view_filter_by_expiry_date_window, text="Choose date",
+                                    command=lambda: inventory_elements.open_calendar_end(self, home), bg="white")
+        self.cal_button_end.place(relx=0.5, rely=0.60, anchor='w')
+
+        self.confirm_button = ui.Button(self.view_filter_by_expiry_date_window, text="CONFIRM",
+                                        command=lambda: inventory_elements.filter_by_expiry_date_result_window(self, frame, home,self.start_product_exp.get(),self.end_product_exp.get()), bg="white",
+                                        width=25, font=("Arial", 10, "bold"))
+        self.confirm_button.place(relx=0.47, rely=0.75, anchor="center")
+
+
+    def open_calendar_start(self,home):
+        self.cal_window=ui.Toplevel(home)
+        self.cal_window.title("Select Date")
+        self.cal_window.geometry("300x300")
+        self.cal = Calendar(self.cal_window,selectmode="day",date_pattern="dd-mm-yyyy")
+        self.cal.pack()
+        def enter_date(self):
+            self.start_product_exp.delete(0, ui.END)
+            self.start_product_exp.insert(0, self.cal.get_date())
+            self.cal_window.destroy()
+        ui.Button(self.cal_window,text="Select",command=lambda : enter_date(self)).pack(pady=5)
+
+    def open_calendar_end(self,home):
+        self.cal_window=ui.Toplevel(home)
+        self.cal_window.title("Select Date")
+        self.cal_window.geometry("300x300")
+        self.cal = Calendar(self.cal_window,selectmode="day",date_pattern="dd-mm-yyyy")
+        self.cal.pack()
+        def enter_date(self):
+            self.end_product_exp.delete(0, ui.END)
+            self.end_product_exp.insert(0, self.cal.get_date())
+            self.cal_window.destroy()
+        ui.Button(self.cal_window,text="Select",command=lambda : enter_date(self)).pack(pady=5)
+
+    def filter_by_expiry_date_result_window(self, frame, home,start_date,end_date):
+        self.view_filter_by_expiry_date_window.destroy()
+        print(f"filtered expiry date: {start_date} to {end_date}")
+        self.csv_data = Inventory.filter_inventory_expiry_date(self,start_date,end_date)
+        self.tree.destroy()
+        inventory_elements.display_csv(self, frame, self.csv_data, 0, 1)
+        filter_usage_expiry_date = True
+
+##################################################### Refresh Filter #####################################################
+
+    def refresh_filter(self, frame, home):
+        self.tree.destroy()
+        self.csv_data = Inventory.open_inventory_csv(self)
+        inventory_elements.display_csv(self, frame, self.csv_data, 0, 1)
+
+####################################################### Sort ###########################################################
+
+    def sort_window(self,frame,home):
+        self.view_sort_window = ui.Toplevel(home)
+        self.view_sort_window.title("Sort Inventory")
+        self.view_sort_window.configure(bg="white")
+        self.view_sort_window.geometry("800x150")
+
+        self.sort_by = ttk.Combobox(self.view_sort_window, values=["Product Name", "Expiry Date", "Quantity"], width=27, font=('Arial', 13), state='readonly')
+        self.sort_by.set("Product Name")
+        self.sort_by.place(relx=0.02, rely=0.40, anchor='w')
+
+        self.sort_type = ttk.Combobox(self.view_sort_window, values=["Ascending", "Descending"], width=27, font=('Arial', 13), state='readonly')
+        self.sort_type.set("Ascending")
+        self.sort_type.place(relx=0.5, rely=0.40, anchor='w')
+
+        self.sort_button = ui.Button(self.view_sort_window, text="Sort", command=lambda: inventory_elements.sort_result_window(self, frame, home, self.sort_by.get(), self.sort_type.get()), bg="white", width=25, font=("Arial", 10, "bold"))
+        self.sort_button.place(relx=0.5, rely=0.6, anchor="center")
+
+    def sort_result_window(self, frame, home, sort_by, sort_type):
+        self.view_sort_window.destroy()
+        print(f"sorted by: {sort_by} in {sort_type} order")
+        self.csv_data = Inventory.sort_inventory(self,sort_by,sort_type)
+        self.tree.destroy()
+        inventory_elements.display_csv(self, frame, self.csv_data, 0, 1)
