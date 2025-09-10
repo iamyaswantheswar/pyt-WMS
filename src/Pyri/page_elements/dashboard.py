@@ -3,6 +3,7 @@ import csv
 from pathlib import Path
 import time
 from datetime import datetime
+from PIL import Image,ImageTk
 from database.DashboardDH import DashboardDataHandler
 base_path = Path(__file__).parent.parent.parent.parent
 
@@ -31,6 +32,7 @@ class dashboard_elements:
         frame.grid_rowconfigure(7,minsize=150)
 
         frame.grid_rowconfigure(8,weight=1)
+        frame.grid_columnconfigure(5,weight=1)
 
 
         
@@ -100,20 +102,54 @@ class dashboard_elements:
 
         self.deamand_lable=ui.Label(self.frame_demand ,text=str(DashboardDataHandler.Demandcount(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
 
+        self.main_graph_frame=ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
+        self.main_graph_frame.grid(column=5,row=1,rowspan=7,sticky="nsew")
 
+        DashboardDataHandler.salesgraph(self)
+        
+        base_path = Path(__file__).parent.parent.parent.parent
+        
+        self.main_graph_frame.grid_columnconfigure(0,minsize=10)
+        self.main_graph_frame.grid_rowconfigure(0,minsize=10)
 
+        self.main_graph_frame.grid_columnconfigure(1,weight=1)
+        self.main_graph_frame.grid_rowconfigure(1,minsize=300)
 
+        self.main_graph_frame.grid_columnconfigure(2,minsize=10)
 
+        self.main_graph_frame.grid_rowconfigure(2,minsize=20)
+        self.main_graph_frame.grid_rowconfigure(3,minsize=300)
+        self.main_graph_frame.grid_rowconfigure(4,weight=1)
 
+        self.canvas_sales=ui.Canvas(self.main_graph_frame,bg="white")
+        self.canvas_sales.grid(column=1,row=1,sticky="nsew")
 
+        self.sale_graph=Image.open(base_path / "src" / "images" / "Dashboard_graphs" / "Month_sales.png")
 
+        self.sale_graph=self.sale_graph.resize((720,300))
 
+        self.image_obj = ImageTk.PhotoImage(self.sale_graph)
 
-
-
+        self.canvas_sales.create_image(0,0, image=self.image_obj,anchor="nw")
 
         
 
+        DashboardDataHandler.profitgraph(self)
+
+        base_path = Path(__file__).parent.parent.parent.parent
+
+        self.canvas_profit=ui.Canvas(self.main_graph_frame,bg="white")
+        self.canvas_profit.grid(column=1,row=3,sticky="nsew")
+
+        self.profit_graph=Image.open(base_path / "src" / "images" / "Dashboard_graphs" / "Month_profit.png")
+
+        self.profit_graph=self.profit_graph.resize((720,300))
+
+        self.image_obj1 = ImageTk.PhotoImage(self.profit_graph)
+
+        self.canvas_profit.create_image(0,0, image=self.image_obj1,anchor="nw")
+
+        
         update_time()
 
 

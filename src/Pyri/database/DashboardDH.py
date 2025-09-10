@@ -2,6 +2,7 @@ from datetime import datetime
 import csv
 import shutil
 from pathlib import Path
+import matplotlib.pyplot as plt
 base_path = Path(__file__).parent.parent.parent.parent
 
 class DashboardDataHandler:
@@ -77,9 +78,109 @@ class DashboardDataHandler:
                     self.demand_count+=1
 
         return self.demand_count
+    
+    def getsaledata(date,self):
+        self.saleslog_csv_filepath= base_path / "data" / "database" / "stocklog" /"sales_log.csv"
+        with open(self.saleslog_csv_filepath,"r",newline="")as f:
+            self.reader=csv.DictReader(f)
+            self.sale_on_date=0
+            for i in self.reader:
+                if i["Sale Date"] == date:
+                    self.sale_on_date=int(self.sale_on_date)+int(i["Sale value"])
+
+        return self.sale_on_date
+                    
+
+
+    def salesgraph(self):
+        self.date_range=["01", '02','03','04','05','06','07','08','09','10','11',"12",'13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30',"31"]
+        self.month_sale_data={}
+        self.current_date=datetime.now().strftime("-%m-%Y")
+        self.sales_graph_path=base_path / "src" / "images" / "Dashboard_graphs" / "Month_sales.png"
+        for i in self.date_range:
+            self.month_sale_data[int(i)]=DashboardDataHandler.getsaledata(str(i)+self.current_date,self)
+
+        self.graph_days=list(self.month_sale_data.keys())
+        self.graph_sale=list(self.month_sale_data.values())
+
+        plt.figure(figsize=(12,5),dpi=100)
+
+        plt.plot(self.graph_days,self.graph_sale,marker="o",linestyle="-",color="blue")
+        plt.title("Monthly sales")
+        plt.xlabel("Day",fontsize=16)
+        plt.ylabel("Sale value",fontsize=16)
+        plt.savefig(self.sales_graph_path,dpi=100)
+        plt.close()
+
+
+    def getprofitdata(date,self):
+        self.saleslog_csv_filepath= base_path / "data" / "database" / "stocklog" /"sales_log.csv"
+        with open(self.saleslog_csv_filepath,"r",newline="")as f:
+            self.reader=csv.DictReader(f)
+            self.profit_on_date=0
+            for i in self.reader:
+                if i["Sale Date"] == date:
+                    self.profit_on_date=int(self.profit_on_date)+int(i["Net profit"])
+
+        return self.profit_on_date
+
+    def profitgraph(self):
+        self.date_range=["01", '02','03','04','05','06','07','08','09','10','11',"12",'13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30',"31"]
+        self.month_profit_data={}
+        self.current_date=datetime.now().strftime("-%m-%Y")
+        self.profit_graph_path=base_path / "src" / "images" / "Dashboard_graphs" / "Month_profit.png"
+        for i in self.date_range:
+            self.month_profit_data[int(i)]=DashboardDataHandler.getprofitdata(str(i)+self.current_date,self)
+
+        self.graph_days=list(self.month_profit_data.keys())
+        self.graph_profit=list(self.month_profit_data.values())
+
+        plt.figure(figsize=(12,5),dpi=100)
+
+        plt.plot(self.graph_days,self.graph_profit,marker="o",linestyle="-",color="blue")
+        plt.title("Monthly profit")
+        plt.xlabel("Day",fontsize=16)
+        plt.ylabel("Net profit",fontsize=16)
+        plt.savefig(self.profit_graph_path,dpi=100)
+        plt.close()
+        
+        
+        
+
+        
+                    
+                    
+                    
+                    
+                    
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        
             
             
         
