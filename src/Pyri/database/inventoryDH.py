@@ -7,6 +7,8 @@ base_path = Path(__file__).parent.parent.parent.parent
 
 inventory_path = base_path / 'data' / 'database' / 'inventory.csv'
 
+#display_inventory_path = base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv'
+
 
 def generate_location_id(block, zone, aisle, rack, shelf):
     location_id = f"{block}-{zone}-{aisle}-{rack}-{shelf}"
@@ -21,14 +23,15 @@ class Inventory:
             by = "Product id"
         if by_what == "Vendor ID":
             by = "Vendor id"
-        with open(inventory_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='w', newline='') as search_file:
+        with open(display_inventory_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='w', newline='') as search_file:
             reader = csv.DictReader(file)
-            fieldnames = reader.fieldnames
-            writer = csv.DictWriter(search_file, fieldnames=fieldnames)
+            writer = csv.DictWriter(search_file, fieldnames=reader.fieldnames)
+            to_write = []
             for row in reader:
                 if query.lower() in row[by].lower():
-                    writer.writeheader()
-                    writer.writerow(row)
+                    to_write.append(row)
+            writer.writeheader()
+            writer.writerows(to_write)
 
         with open(base_path / 'data' / 'database' / 'temp_memory' / 'search.csv', mode='r', newline='') as search_file:
             reader = csv.reader(search_file)
@@ -37,11 +40,79 @@ class Inventory:
 
     def open_inventory_csv(self):
         with open(inventory_path, newline="") as f:
-            self.reader = csv.reader(f)
-            return list(self.reader)
+            reader = csv.reader(f)
+            return list(reader)
+
+    def filter_inventory_location(self,block,zone,aisle,rack,shelf,filter_usage = False):
+        def check_csv_duplicate(row):
+            with open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='r', newline='') as filtered_file:
+                reader = csv.DictReader(filtered_file)
+                rows = list(reader)
+                if row in rows:
+                    return True
+
+        if filter_usage:
+            with open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='r', newline='') as filtered_file:
+                reader = csv.DictReader(filtered_file)
+                rows = list(reader)
+                fieldnames = reader.fieldnames
+                to_write = []
+                for row in rows:
+                    location_str = str(row["Location"])
+                    if location_str[0] == block:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+                    if location_str[1] == zone:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+                    if location_str[2] == aisle:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+                    if location_str[3] == rack:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+                    if location_str[4] == shelf:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+
+            with open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='w', newline='') as filtered_file:
+                writer = csv.DictWriter(filtered_file, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(to_write)
+
+        else:
+            with open(inventory_path, mode='r', newline='') as file, open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='w', newline='') as filter_file:
+                reader = csv.DictReader(file)
+                rows = list(reader)
+                to_write = []
+                for row in rows:
+                    location_str = str(row["Location"])
+                    if location_str[0] == block:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+                    if location_str[1] == zone:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+                    if location_str[2] == aisle:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+                    if location_str[3] == rack:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+                    if location_str[4] == shelf:
+                        if not check_csv_duplicate(row):
+                            to_write.append(row)
+                writer = csv.DictWriter(filter_file, fieldnames=reader.fieldnames)
+                writer.writeheader()
+                writer.writerow(row)
+
+        with open(base_path / 'data' / 'database' / 'temp_memory' / 'filter.csv', mode='r', newline='') as filter_file:
+            reader = csv.reader(filter_file)
+            return list(reader)
 
 
 
+''''
 class Product:
 
     def __init__(self, product_id, product_name='', quantity=0, unit_cost_price=0, unit_sale_price=0, stock_value=0,
@@ -126,10 +197,10 @@ class Product:
         if WriteToCSV:
             self.write_to_csv()
 
-    '''
+
     def generate_stock_id(self, loc):
         return f"{self.id}@{loc}"
-    '''
+
 
     def update_location(self, location, WriteToCSV=False):
         self.locations = location
@@ -159,7 +230,7 @@ class Product:
 
 
 
-'''
+
 class Stock:
 
     def __init__(self, stock_id, location, product, quantity, expiry):
