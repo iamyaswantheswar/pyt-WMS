@@ -2,8 +2,10 @@ import tkinter as ui
 import csv
 from pathlib import Path
 import time
-from datetime import datetime 
+from datetime import datetime
+from database.DashboardDH import DashboardDataHandler
 base_path = Path(__file__).parent.parent.parent.parent
+
 
 class dashboard_elements:
     def dashboard_ele(self, frame,home):
@@ -61,42 +63,42 @@ class dashboard_elements:
 
         self.tprofit_label_title=ui.Label(self.frame_tprofit,text="Todays profit ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
 
-        self.tprofit_lable=ui.Label(self.frame_tprofit ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+        self.tprofit_lable=ui.Label(self.frame_tprofit ,text= "₹" + " "+ str(DashboardDataHandler.Todayprofit(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
 
         self.frame_tsales = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_tsales.grid(row=3,column=3,sticky="nsew")
 
         self.tsales_label_title=ui.Label(self.frame_tsales,text="Todays sales ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
 
-        self.tsales_lable=ui.Label(self.frame_tsales,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+        self.tsales_lable=ui.Label(self.frame_tsales,text= "₹" + " "+ str(DashboardDataHandler.Todaysale(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
 
         self.frame_mprofit = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_mprofit.grid(row=5,column=1,sticky="nsew")
 
-        self.tprofit_label_title=ui.Label(self.frame_mprofit,text="Months profit ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+        self.mprofit_label_title=ui.Label(self.frame_mprofit,text="Months profit ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
 
-        self.mprofit_lable=ui.Label(self.frame_mprofit ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+        self.mprofit_lable=ui.Label(self.frame_mprofit ,text="₹" + " "+ str(DashboardDataHandler.Monthprofit(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
 
         self.frame_msales = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_msales.grid(row=5,column=3,sticky="nsew")
 
         self.msales_label_title=ui.Label(self.frame_msales,text="Month sales ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
 
-        self.msales_lable=ui.Label(self.frame_msales ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+        self.msales_lable=ui.Label(self.frame_msales ,text="₹" + " "+ str(DashboardDataHandler.Monthsale(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
 
         self.frame_stockvalue = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_stockvalue.grid(row=7,column=1,sticky="nsew")
 
         self.stockvalue_title=ui.Label(self.frame_stockvalue,text="Total Stock Value ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
 
-        self.stockvalue_lable=ui.Label(self.frame_stockvalue ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+        self.stockvalue_lable=ui.Label(self.frame_stockvalue ,text="₹" + " "+ str(DashboardDataHandler.TotalStock(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
 
         self.frame_demand = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
         self.frame_demand.grid(row=7,column=3,sticky="nsew")
 
-        self.demand_title=ui.Label(self.frame_demand,text="Demands",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+        self.demand_title=ui.Label(self.frame_demand,text="Unfullfilled demands",font=("Didot",15,"bold"),bg="white").place(relx=0.05,rely=0.1)
 
-        self.deamand_lable=ui.Label(self.frame_demand ,text="XXXXXXX",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+        self.deamand_lable=ui.Label(self.frame_demand ,text=str(DashboardDataHandler.Demandcount(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
 
 
 

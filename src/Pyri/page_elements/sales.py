@@ -239,7 +239,7 @@ class sales_elements:
                 self.entry_product_saleprice.insert(0,productdata["Unit Sale price"])
                 self.entry_product_saleprice.config(state="readonly")
 
-                self.label_product_fsaleprice = ui.Label(self.new_sale_data_window, text="Price after discount",bg="white",font=('Arial',10))
+                self.label_product_fsaleprice = ui.Label(self.new_sale_data_window, text="Final sale price",bg="white",font=('Arial',10))
                 self.label_product_fsaleprice.place(relx=0.05,rely=0.42,anchor="w")
 
                 self.entry_product_fsaleprice=ui.Entry(self.new_sale_data_window, width=40,bd=2,font=('Arial',13))
