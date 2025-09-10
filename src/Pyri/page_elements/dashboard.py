@@ -1,65 +1,123 @@
 import tkinter as ui
-import numpy as np
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import csv
 from pathlib import Path
+import time
+from datetime import datetime
+from database.DashboardDH import DashboardDataHandler
 base_path = Path(__file__).parent.parent.parent.parent
 
+
 class dashboard_elements:
-    def dashboard_ele(self, frame, value=75):
-        # SALES OVER A MONTH
-        self.lbl = ui.Label(frame, text='SALES OVER A MONTH', font=("Arial", 30), bg="#001F3F", fg="white")
-        self.lbl.place(relx=0.6, rely=0.58, anchor="center")
-        fig = Figure(figsize=(6,3), dpi=100)
-        ax = fig.add_subplot(111)
-        ax.plot([0, 1, 2, 3], [0, 1, 4, 9])  
-        canvas = FigureCanvasTkAgg(fig, master=frame)
-        canvas.draw()
-        canvas.get_tk_widget().place(relx=0.6, rely=0.8, anchor="center")
+    def dashboard_ele(self, frame,home):
+        frame.grid_columnconfigure(0,minsize=20)
+        frame.grid_rowconfigure(0,weight=1)
 
-        #profit over a month
-        self.lbl = ui.Label(frame, text='PROFITS OVER A MONTH', font=("Arial", 30), bg="#001F3F", fg="white")
-        self.lbl.place(relx=0.6, rely=0.1, anchor="center")
-        fig = Figure(figsize=(6,3), dpi=100)
-        ax = fig.add_subplot(111)
-        ax.plot([0, 1, 2, 3], [0, 1, 4, 9])  
-        canvas = FigureCanvasTkAgg(fig, master=frame)
-        canvas.draw()
-        canvas.get_tk_widget().place(relx=0.6, rely=0.32, anchor="center")
+        frame.grid_columnconfigure(1,minsize=250)
+        frame.grid_rowconfigure(1,minsize=150)
 
-        # THE NET PROFIT
-        self.lbl1 = ui.Label(frame, text='NET PROFIT', font=("Arial", 30), bg="#001F3F", fg="white")
-        self.lbl1.place(relx=0.15, rely=0.09, anchor="center")  
+        frame.grid_columnconfigure(2,minsize=20)
+        frame.grid_rowconfigure(2,minsize=20)
 
-        numbers = 11
-        self.lbl2 = ui.Label(frame, text=numbers, font=("Arial", 100), bg="#001F3F", fg="white")
-        self.lbl2.place(relx=0.15, rely=0.22, anchor="center")
-        #TODAY SALES
-        self.lbl1 = ui.Label(frame, text='TODAY SALES', font=("Arial", 30), bg="#001F3F", fg="white")
-        self.lbl1.place(relx=0.15, rely=0.35, anchor="center")  
+        frame.grid_columnconfigure(3,minsize=250)
+        frame.grid_rowconfigure(3,minsize=150)
 
-        numbers = 11
-        self.lbl2 = ui.Label(frame, text=numbers, font=("Arial", 100), bg="#001F3F", fg="white")
-        self.lbl2.place(relx=0.15, rely=0.5, anchor="center")
-        #MONTH SLALES 
-        self.lbl1 = ui.Label(frame, text='MONTH SLALES', font=("Arial", 30), bg="#001F3F", fg="white")
-        self.lbl1.place(relx=0.15, rely=0.69, anchor="center")  
+        frame.grid_columnconfigure(4,minsize=20)
+        frame.grid_rowconfigure(4,minsize=20)
 
-        numbers = 11
-        self.lbl2 = ui.Label(frame, text=numbers, font=("Arial", 100), bg="#001F3F", fg="white")
-        self.lbl2.place(relx=0.15, rely=0.85, anchor="center")
+        frame.grid_rowconfigure(5,minsize=150)
+
+        frame.grid_rowconfigure(6,minsize=20)
+
+        frame.grid_rowconfigure(7,minsize=150)
+
+        frame.grid_rowconfigure(8,weight=1)
 
 
-if __name__ == "__main__":
-    root = ui.Tk()
-    root.geometry("1000x1000")
-    root.configure(bg='#001F3F')  # A darker blue background
+        
 
-    frm = ui.Frame(root, bg='#001F3F')
-    frm.pack(fill="both", expand=True)
 
-    dash = dashboard_elements()
-    dash.dashboard_ele(frm, value=75)  # Pass speedometer value 0-100
+        self.frame_time = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
+        self.frame_time.grid(row=1,column=1,sticky="nsew")
 
-    root.mainloop()
+        def update_time():
+            self.current_time=time.strftime('%I:%M:%S %p')
+            self.time_lable.configure(text =self.current_time)
+            self.frame_time.after(1000,update_time)
+
+        self.time_label_title=ui.Label(self.frame_time,text="Hola Manager :)",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+        
+        self.time_lable=ui.Label(self.frame_time,font=("Didot",18,"bold"),bg="white")
+        self.time_lable.place(relx=0.05,rely=0.6)
+
+        self.frame_date = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
+        self.frame_date.grid(row=1,column=3,sticky="nsew")
+
+        self.date_lable_title=ui.Label(self.frame_date,text="Today is",bg="white",font=("Didot",20,"bold")).place(relx=0.05,rely=0.1)
+
+        self.current_date=datetime.now().strftime('%b %d %Y %a')
+        self.date_lable=ui.Label(self.frame_date,text=self.current_date,font=("Didot",18,"bold"),bg="white")
+        self.date_lable.place(relx=0.05,rely=0.6)
+
+        self.frame_tprofit = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
+        self.frame_tprofit.grid(row=3,column=1,sticky="nsew")
+
+        self.tprofit_label_title=ui.Label(self.frame_tprofit,text="Todays profit ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.tprofit_lable=ui.Label(self.frame_tprofit ,text= "₹" + " "+ str(DashboardDataHandler.Todayprofit(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
+        self.frame_tsales = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
+        self.frame_tsales.grid(row=3,column=3,sticky="nsew")
+
+        self.tsales_label_title=ui.Label(self.frame_tsales,text="Todays sales ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.tsales_lable=ui.Label(self.frame_tsales,text= "₹" + " "+ str(DashboardDataHandler.Todaysale(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
+        self.frame_mprofit = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
+        self.frame_mprofit.grid(row=5,column=1,sticky="nsew")
+
+        self.mprofit_label_title=ui.Label(self.frame_mprofit,text="Months profit ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.mprofit_lable=ui.Label(self.frame_mprofit ,text="₹" + " "+ str(DashboardDataHandler.Monthprofit(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
+        self.frame_msales = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
+        self.frame_msales.grid(row=5,column=3,sticky="nsew")
+
+        self.msales_label_title=ui.Label(self.frame_msales,text="Month sales ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.msales_lable=ui.Label(self.frame_msales ,text="₹" + " "+ str(DashboardDataHandler.Monthsale(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
+        self.frame_stockvalue = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
+        self.frame_stockvalue.grid(row=7,column=1,sticky="nsew")
+
+        self.stockvalue_title=ui.Label(self.frame_stockvalue,text="Total Stock Value ",font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.stockvalue_lable=ui.Label(self.frame_stockvalue ,text="₹" + " "+ str(DashboardDataHandler.TotalStock(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
+        self.frame_demand = ui.Frame(frame, bg="#FFFFFF",highlightbackground="black", highlightcolor="black", highlightthickness=5)
+        self.frame_demand.grid(row=7,column=3,sticky="nsew")
+
+        self.demand_title=ui.Label(self.frame_demand,text="Unfullfilled demands",font=("Didot",15,"bold"),bg="white").place(relx=0.05,rely=0.1)
+
+        self.deamand_lable=ui.Label(self.frame_demand ,text=str(DashboardDataHandler.Demandcount(self)),font=("Didot",18,"bold"),bg="white").place(relx=0.05,rely=0.6)
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+        update_time()
+
+
+        
+
+
+
