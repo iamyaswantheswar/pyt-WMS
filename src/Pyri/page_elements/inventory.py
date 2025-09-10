@@ -2,6 +2,7 @@ import tkinter as ui
 from pathlib import Path
 from tkinter import ttk
 from tkcalendar import Calendar
+from tkinter import messagebox
 import csv
 from database.inventoryDH import  Inventory
 
@@ -110,8 +111,12 @@ class inventory_elements:
         self.search_result_window.configure(bg="white")
 
         self.result_data = Inventory.search_product_name(self, query, by_what)
-        print(f"Search result for {query}")
-        inventory_elements.display_search_result(self, self.search_result_window, self.result_data, 0, 0)
+        print(f"Searched for {query}")
+        if not self.result_data:
+            messagebox.showerror("Error", "No results found")
+            self.search_result_window.destroy()
+        else:
+            inventory_elements.display_search_result(self, self.search_result_window, self.result_data, 0, 0)
 
     def display_search_result(self, window, data, row, column, colspan=2):
         self.tree = ttk.Treeview(window, columns=data[0], show="headings")
@@ -200,10 +205,6 @@ class inventory_elements:
         self.csv_data = Inventory.filter_inventory_location(self,self.product_block,self.product_zone,self.product_aisle,self.product_rack,self.product_shelf)
         self.tree.destroy()
         inventory_elements.display_csv(self, frame, self.csv_data, 0, 1)
-        filter_usage_location = True
-
-
-
 
 ################################################### Filter Expiry Date ###################################################
 
@@ -280,7 +281,7 @@ class inventory_elements:
         self.view_sort_window.configure(bg="white")
         self.view_sort_window.geometry("800x150")
 
-        self.sort_by = ttk.Combobox(self.view_sort_window, values=["Product Name", "Expiry Date", "Quantity"], width=27, font=('Arial', 13), state='readonly')
+        self.sort_by = ttk.Combobox(self.view_sort_window, values=["Product Name", "Expiry Date", "Quantity", "Unit Cost price","Unit Sale price","Stock value","Location"], width=27, font=('Arial', 13), state='readonly')
         self.sort_by.set("Product Name")
         self.sort_by.place(relx=0.02, rely=0.40, anchor='w')
 
