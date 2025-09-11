@@ -11,25 +11,25 @@ base_path = Path(__file__).parent.parent.parent.parent
 class dashboard_elements:
     def dashboard_ele(self, frame,home):
         frame.grid_columnconfigure(0,minsize=20)
-        frame.grid_rowconfigure(0,weight=1)
+        frame.grid_rowconfigure(0,minsize=50)
 
         frame.grid_columnconfigure(1,minsize=250)
-        frame.grid_rowconfigure(1,minsize=150)
+        frame.grid_rowconfigure(1,minsize=200)
 
         frame.grid_columnconfigure(2,minsize=20)
         frame.grid_rowconfigure(2,minsize=20)
 
         frame.grid_columnconfigure(3,minsize=250)
-        frame.grid_rowconfigure(3,minsize=150)
+        frame.grid_rowconfigure(3,minsize=200)
 
         frame.grid_columnconfigure(4,minsize=20)
         frame.grid_rowconfigure(4,minsize=20)
 
-        frame.grid_rowconfigure(5,minsize=150)
+        frame.grid_rowconfigure(5,minsize=200)
 
         frame.grid_rowconfigure(6,minsize=20)
 
-        frame.grid_rowconfigure(7,minsize=150)
+        frame.grid_rowconfigure(7,minsize=200)
 
         frame.grid_rowconfigure(8,weight=1)
         frame.grid_columnconfigure(5,weight=1)
@@ -113,20 +113,20 @@ class dashboard_elements:
         self.main_graph_frame.grid_rowconfigure(0,minsize=10)
 
         self.main_graph_frame.grid_columnconfigure(1,weight=1)
-        self.main_graph_frame.grid_rowconfigure(1,minsize=300)
+        self.main_graph_frame.grid_rowconfigure(1,minsize=400)
 
         self.main_graph_frame.grid_columnconfigure(2,minsize=10)
 
-        self.main_graph_frame.grid_rowconfigure(2,minsize=20)
-        self.main_graph_frame.grid_rowconfigure(3,minsize=300)
-        self.main_graph_frame.grid_rowconfigure(4,weight=1)
+        self.main_graph_frame.grid_rowconfigure(2,minsize=10)
+        self.main_graph_frame.grid_rowconfigure(3,minsize=400)
+        self.main_graph_frame.grid_rowconfigure(4,minsize=20)
 
         self.canvas_sales=ui.Canvas(self.main_graph_frame,bg="white")
         self.canvas_sales.grid(column=1,row=1,sticky="nsew")
 
         self.sale_graph=Image.open(base_path / "src" / "images" / "Dashboard_graphs" / "Month_sales.png")
 
-        self.sale_graph=self.sale_graph.resize((720,300))
+        self.sale_graph=self.sale_graph.resize((1440,400))
 
         self.image_obj = ImageTk.PhotoImage(self.sale_graph)
 
@@ -143,7 +143,7 @@ class dashboard_elements:
 
         self.profit_graph=Image.open(base_path / "src" / "images" / "Dashboard_graphs" / "Month_profit.png")
 
-        self.profit_graph=self.profit_graph.resize((720,300))
+        self.profit_graph = self.profit_graph.resize((1440,400))
 
         self.image_obj1 = ImageTk.PhotoImage(self.profit_graph)
 

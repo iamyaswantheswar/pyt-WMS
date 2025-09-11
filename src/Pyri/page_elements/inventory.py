@@ -23,6 +23,7 @@ class inventory_elements:
     def display_csv(self, frame, data, row, column, colspan=1):
         self.style = ttk.Style()
         self.style.theme_use("clam")
+        self.style.configure("Treeview",font=("Didot", 9, "bold"))
         self.tree = ttk.Treeview(frame, columns=data[0], show="headings")
         self.tree.grid(row=row, column=column, columnspan=colspan, sticky="nsew", padx=(0, 0), pady=(0, 0))
         self.hbar = ttk.Scrollbar(frame, orient="horizontal", command=self.tree.xview)
@@ -30,49 +31,56 @@ class inventory_elements:
         self.tree.configure(xscrollcommand=self.hbar.set, yscrollcommand=self.vbar.set)
         self.hbar.grid(row=1, column=1, sticky="ew")
         self.vbar.grid(row=0, column=2, sticky="ns")
+        self.tree.tag_configure("oddrow",background="white")
+        self.tree.tag_configure("evenrow",background="lightblue")
         # configure coloumns
         for col in data[0]:
             self.tree.heading(col, text=col)
             self.tree.column(col, anchor="center", width=120)
             # inserting rows
+        self.count=0
         for row_data in data[1:]:
-            self.tree.insert("", "end", values=row_data)
+            self.count+=1
+            if self.count % 2 == 0:
+                self.tree.insert("", "end", values=row_data,tags=("evenrow",))
+            else:
+                self.tree.insert("", "end", values=row_data,tags=("oddrow",))
         frame.grid_rowconfigure(row, weight=1)
         frame.grid_columnconfigure(column, weight=1)
         return self.tree
 
     def inventory_ele(self, frame, home):
-        frame.grid_columnconfigure(0, minsize=250)
+        frame.grid_columnconfigure(0, minsize=300)
 
         self.search_button = ui.Button(frame, text="Search",
                                        command=lambda: inventory_elements.search_product_window(self, home, frame),
-                                       width=25,
+                                       width=32,
                                        font=("Arial", 10, "bold"))
-        self.search_button.place(relx=0.02, rely=0.1)
+        self.search_button.place(relx=0.01, rely=0.1)
 
         self.filter_location_button = ui.Button(frame, text="Filter by Location",
                                        command=lambda: inventory_elements.filter_by_location_window(self, frame, home),
-                                       width=25,
+                                       width=32,
                                        font=("Arial", 10, "bold"))
-        self.filter_location_button.place(relx=0.02, rely=0.3)
+        self.filter_location_button.place(relx=0.01, rely=0.25)
 
         self.filter_expiry_date_button = ui.Button(frame, text="Filter by Expiry Date",
                                        command=lambda: inventory_elements.filter_by_expiry_date_window(self, frame, home),
-                                       width=25,
+                                       width=32,
                                        font=("Arial", 10, "bold"))
-        self.filter_expiry_date_button.place(relx=0.02, rely=0.4)
+        self.filter_expiry_date_button.place(relx=0.01, rely=0.4)
 
         self.refresh_filter_button = ui.Button(frame, text="Refresh Filter",
                                        command=lambda: inventory_elements.refresh_filter(self, frame, home),
-                                       width=25,
+                                       width=32,
                                        font=("Arial", 10, "bold"))
-        self.refresh_filter_button.place(relx=0.02, rely=0.5)
+        self.refresh_filter_button.place(relx=0.01, rely=0.55)
 
         self.sort_button = ui.Button(frame, text="Sort",
                                        command=lambda: inventory_elements.sort_window(self, frame, home),
-                                       width=25,
+                                       width=32,
                                        font=("Arial", 10, "bold"))
-        self.sort_button.place(relx=0.02, rely=0.7)
+        self.sort_button.place(relx=0.01, rely=0.7)
 
         self.csv_data = Inventory.open_inventory_csv(self)
         inventory_elements.display_csv(self, frame, self.csv_data, 0, 1)
@@ -86,7 +94,7 @@ class inventory_elements:
         self.view_search_window.geometry("800x150")
 
         self.view_search = ui.Label(self.view_search_window, text="Enter search query", bg="white",
-                                    font=('Arial', 10))
+                                    font=('Arial', 15,'bold'))
         self.view_search.place(relx=0.05, rely=0.2, anchor="w")
 
         self.search_entry_box = ui.Entry(self.view_search_window, width=30, bd=2, font=('Arial', 13))
@@ -212,7 +220,9 @@ class inventory_elements:
         self.view_filter_by_expiry_date_window = ui.Toplevel(home)
         self.view_filter_by_expiry_date_window.title("Filter Inventory by Expiry Date")
         self.view_filter_by_expiry_date_window.configure(bg="white")
-        self.view_filter_by_expiry_date_window.geometry("800x150")
+    
+        self.view_filter_by_expiry_date_window.geometry("800x200")
+        self.label_expiery=ui.Label(self.view_filter_by_expiry_date_window,text="Enter Expiry date range",font=('Arial', 13,'bold'),bg='white').place(relx=0.02,rely=0.1) 
 
         self.start_product_exp = ui.Entry(self.view_filter_by_expiry_date_window, width=40, bd=2, font=('Arial', 13))
         self.start_product_exp.place(relx=0.02, rely=0.40, anchor='w')
@@ -231,7 +241,7 @@ class inventory_elements:
         self.confirm_button = ui.Button(self.view_filter_by_expiry_date_window, text="CONFIRM",
                                         command=lambda: inventory_elements.filter_by_expiry_date_result_window(self, frame, home,self.start_product_exp.get(),self.end_product_exp.get()), bg="white",
                                         width=25, font=("Arial", 10, "bold"))
-        self.confirm_button.place(relx=0.47, rely=0.75, anchor="center")
+        self.confirm_button.place(relx=0.47, rely=0.9, anchor="center")
 
 
     def open_calendar_start(self,home):
@@ -290,7 +300,7 @@ class inventory_elements:
         self.sort_type.place(relx=0.5, rely=0.40, anchor='w')
 
         self.sort_button = ui.Button(self.view_sort_window, text="Sort", command=lambda: inventory_elements.sort_result_window(self, frame, home, self.sort_by.get(), self.sort_type.get()), bg="white", width=25, font=("Arial", 10, "bold"))
-        self.sort_button.place(relx=0.5, rely=0.6, anchor="center")
+        self.sort_button.place(relx=0.5, rely=0.8, anchor="center")
 
     def sort_result_window(self, frame, home, sort_by, sort_type):
         self.view_sort_window.destroy()

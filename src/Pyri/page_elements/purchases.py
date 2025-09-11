@@ -34,25 +34,25 @@ class purchases_elements:
         self.tree.destroy()
     
     def purchases_ele(self,frame,home):
-        frame.grid_columnconfigure(0,minsize=250)
-        self.add_product_button=ui.Button(frame,text="Add new vendor",command = lambda : purchases_elements.add_vendor(self,home,frame),width=25,font=("Arial",10,"bold"))
-        self.add_product_button.place(relx=0.02,rely=0.1)
+        frame.grid_columnconfigure(0,minsize=300)
+        self.add_product_button=ui.Button(frame,text="Add new vendor",command = lambda : purchases_elements.add_vendor(self,home,frame),width=32,font=("Arial",10,"bold"))
+        self.add_product_button.place(relx=0.01,rely=0.1)
         
-        self.add_product_button=ui.Button(frame,text="Add new product",command = lambda : purchases_elements.add_product(self,home,frame),width=25,font=("Arial",10,"bold"))
-        self.add_product_button.place(relx=0.02,rely=0.26)
+        self.add_product_button=ui.Button(frame,text="Add new product",command = lambda : purchases_elements.add_product(self,home,frame),width=32,font=("Arial",10,"bold"))
+        self.add_product_button.place(relx=0.01,rely=0.26)
         
-        self.stock_existing_product_button=ui.Button(frame,text="Add stock ",command = lambda : purchases_elements.add_stock(self,home,frame),width=25,font=("Arial",10,"bold"))
-        self.stock_existing_product_button.place(relx=0.02,rely=0.42)
+        self.stock_existing_product_button=ui.Button(frame,text="Add stock ",command = lambda : purchases_elements.add_stock(self,home,frame),width=32,font=("Arial",10,"bold"))
+        self.stock_existing_product_button.place(relx=0.01,rely=0.42)
         
-        self.modify_purchase_button=ui.Button(frame,text="Modify Purchase ",command = lambda : purchases_elements.modify_purchase(self,home,frame),width=25,font=("Arial",10,"bold"))
-        self.modify_purchase_button.place(relx=0.02,rely=0.58)
+        self.modify_purchase_button=ui.Button(frame,text="Modify Purchase ",command = lambda : purchases_elements.modify_purchase(self,home,frame),width=32,font=("Arial",10,"bold"))
+        self.modify_purchase_button.place(relx=0.01,rely=0.58)
         
-        self.delete_purchase_button=ui.Button(frame,text="Delete Purchase ",command = lambda : purchases_elements.delete_purchase(self,home,frame),width=25,font=("Arial",10,"bold"))
-        self.delete_purchase_button.place(relx=0.02,rely=0.74)
+        self.delete_purchase_button=ui.Button(frame,text="Delete Purchase ",command = lambda : purchases_elements.delete_purchase(self,home,frame),width=32,font=("Arial",10,"bold"))
+        self.delete_purchase_button.place(relx=0.01,rely=0.74)
         
         
-        self.view_history_button=ui.Button(frame,text="View Purchase history ",command = lambda : purchases_elements.view_purchase_history(self,home),width=25,font=("Arial",10,"bold"))
-        self.view_history_button.place(relx=0.02,rely=0.9)
+        self.view_history_button=ui.Button(frame,text="View Purchase history ",command = lambda : purchases_elements.view_purchase_history(self,home),width=32,font=("Arial",10,"bold"))
+        self.view_history_button.place(relx=0.01,rely=0.9)
 
         
         
@@ -67,6 +67,7 @@ class purchases_elements:
     def display_csv(self,frame,data,row,column,colspan=1):
         self.style=ttk.Style()
         self.style.theme_use("clam")
+        self.style.configure("Treeview",font=("Didot", 9, "bold"))
         self.tree=ttk.Treeview(frame,columns=data[0],show="headings")
         self.tree.grid(row=row,column=column,columnspan=colspan,sticky="nsew",padx=(0,0),pady=(0,0))
         self.hbar=ttk.Scrollbar(frame,orient="horizontal",command=self.tree.xview)
@@ -88,8 +89,8 @@ class purchases_elements:
                 self.tree.insert("","end",values=row_data,tags=("evenrow",))
             else:
                 self.tree.insert("","end",values=row_data,tags=("oddrow",))
-        frame.grid_rowconfigure(row,weight=1)
-        frame.grid_columnconfigure(column,weight=1)
+        frame.grid_rowconfigure(row,weight=1,minsize=40)
+        frame.grid_columnconfigure(column,weight=1,minsize=40)
         return self.tree
 
 

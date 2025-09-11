@@ -47,7 +47,7 @@ class VendorDataHandler:
                     self.writer.writerow(i)
                 else:
                     self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.Vendor_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.Vendor_csv_filepath)
 
 
     def modify_purchase(self,mquantity,vendorid,unitprice,wrongqty):
@@ -66,7 +66,7 @@ class VendorDataHandler:
                     self.writer.writerow(i)
                 else:
                     self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.Vendor_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.Vendor_csv_filepath)
     def delete_purchase(self,vendorid,purchaseid,unitprice,previousqty):
         self.Vendor_csv_filepath= base_path / "data" / "database" / "vendor.csv"
         self.temp_csv_filepath=base_path / "data" / "database" / "temp.csv"
@@ -84,7 +84,7 @@ class VendorDataHandler:
                     self.writer.writerow(i)
                 else:
                     self.writer.writerow(i)
-            shutil.move(self.temp_csv_filepath,self.Vendor_csv_filepath)
+        shutil.move(self.temp_csv_filepath,self.Vendor_csv_filepath)
 
 
 

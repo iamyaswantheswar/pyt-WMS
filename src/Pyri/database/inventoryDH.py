@@ -26,14 +26,17 @@ class Inventory:
             by = "Product id"
         if by_what == "Vendor ID":
             by = "Vendor id"
-        with open(display_csv_path, mode='r', newline='') as file:
+        with open(inventory_path, mode='r', newline='') as file:
             reader = csv.DictReader(file)
             to_write = []
             for row in reader:
+                print(row)
                 if str(query).lower() in row[by].lower():
                     to_write.append(row)
             if to_write == []:
                 output = False
+            else:
+                output=True
             with open(display_csv_path, mode='w', newline='') as search_file:
                 writer = csv.DictWriter(search_file, fieldnames=reader.fieldnames)
                 writer.writeheader()

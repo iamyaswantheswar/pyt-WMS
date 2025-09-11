@@ -15,22 +15,22 @@ from database.DemandDH import DemandDataHandler
 base_path = Path(__file__).parent.parent.parent.parent
 class sales_elements:
         def sales_ele(self,frame,home):
-                frame.grid_columnconfigure(0,minsize=250)
-                self.new_sale_button=ui.Button(frame,text="Add customer",command = lambda : sales_elements.add_customer(self,frame,home),width=25,font=("Arial",10,"bold"))
-                self.new_sale_button.place(relx=0.02,rely=0.05)
+                frame.grid_columnconfigure(0,minsize=300)
+                self.new_sale_button=ui.Button(frame,text="Add customer",command = lambda : sales_elements.add_customer(self,frame,home),width=32,font=("Arial",10,"bold"))
+                self.new_sale_button.place(relx=0.01,rely=0.05)
                 
-                self.sale_new_cus_button=ui.Button(frame,text="New Sale",command = lambda : sales_elements.new_sale(self,frame,home),width=25,font=("Arial",10,"bold"))
-                self.sale_new_cus_button.place(relx=0.02,rely=0.25)
+                self.sale_new_cus_button=ui.Button(frame,text="New Sale",command = lambda : sales_elements.new_sale(self,frame,home),width=32,font=("Arial",10,"bold"))
+                self.sale_new_cus_button.place(relx=0.01,rely=0.25)
                 
-                self.modify_sale_button=ui.Button(frame,text="Modify sale ",command = lambda : sales_elements.modify_sale(self,frame,home),width=25,font=("Arial",10,"bold"))
-                self.modify_sale_button.place(relx=0.02,rely=0.45)
+                self.modify_sale_button=ui.Button(frame,text="Modify sale ",command = lambda : sales_elements.modify_sale(self,frame,home),width=32,font=("Arial",10,"bold"))
+                self.modify_sale_button.place(relx=0.01,rely=0.45)
                 
-                self.delete_sale_button=ui.Button(frame,text="Delete sale ",command = lambda : sales_elements.delete_sale(self,home,frame),width=25,font=("Arial",10,"bold"))
-                self.delete_sale_button.place(relx=0.02,rely=0.65)
+                self.delete_sale_button=ui.Button(frame,text="Delete sale ",command = lambda : sales_elements.delete_sale(self,home,frame),width=32,font=("Arial",10,"bold"))
+                self.delete_sale_button.place(relx=0.01,rely=0.65)
                 
                 
-                self.view_history_button=ui.Button(frame,text="View sales history ",command = lambda : sales_elements.view_sale_history(self,home) ,width=25,font=("Arial",10,"bold"))
-                self.view_history_button.place(relx=0.02,rely=0.85)
+                self.view_history_button=ui.Button(frame,text="View sales history ",command = lambda : sales_elements.view_sale_history(self,home) ,width=32,font=("Arial",10,"bold"))
+                self.view_history_button.place(relx=0.01,rely=0.85)
 
                 sales_elements.refresh_csv(self,frame,home)
                 self.csv_data=sales_elements.open_sales_csv(self)
@@ -60,6 +60,7 @@ class sales_elements:
         def display_csv(self,frame,data,row,column,colspan=1):
                 self.style=ttk.Style()
                 self.style.theme_use("clam")
+                self.style.configure("Treeview",font=("Didot", 9, "bold"))
                 self.style.configure("Treeview",bg="white")
                 self.tree=ttk.Treeview(frame,columns=data[0],show="headings")
                 self.tree.grid(row=row,column=column,columnspan=colspan,sticky="nsew",padx=(0,0),pady=(0,0))

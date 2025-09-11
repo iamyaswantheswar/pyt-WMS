@@ -103,7 +103,7 @@ class DashboardDataHandler:
         self.graph_days=list(self.month_sale_data.keys())
         self.graph_sale=list(self.month_sale_data.values())
 
-        plt.figure(figsize=(12,5),dpi=100)
+        plt.figure(figsize=(14.4,5),dpi=100)
 
         plt.plot(self.graph_days,self.graph_sale,marker="o",linestyle="-",color="blue")
         plt.title("Monthly sales")
@@ -135,7 +135,7 @@ class DashboardDataHandler:
         self.graph_days=list(self.month_profit_data.keys())
         self.graph_profit=list(self.month_profit_data.values())
 
-        plt.figure(figsize=(12,5),dpi=100)
+        plt.figure(figsize=(14.4,5),dpi=100)
 
         plt.plot(self.graph_days,self.graph_profit,marker="o",linestyle="-",color="blue")
         plt.title("Monthly profit")
