@@ -1,6 +1,13 @@
 # pyt-WMS
 pyt-WMS is a simple warehouse management app written in python using tkinter
 
+## Installation
+To install pyt-WMS, run the following command:
+```
+git clone https://github.com/iamyaswantheswar/pyt-WMS
+```
+and then run pyt-wms.bat
+
 ## Page Info
 
 ### Login Page
@@ -23,7 +30,7 @@ pyt-WMS is a simple warehouse management app written in python using tkinter
 
 ### Demand
 - Handles the demand of products in the warehouse.
-- Products that are low in stock are automatically added to the demand.
+- Products are automatically added to the demand when sale quantity is greater than the available quantity.
 
 ## Future Improvements
 
