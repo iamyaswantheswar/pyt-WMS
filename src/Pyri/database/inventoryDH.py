@@ -19,29 +19,30 @@ def generate_location_id(block, zone, aisle, rack, shelf):
 class Inventory:
 
     def search_product_name(self, query, by_what):
-        output = None
+        no_output = None
         if by_what == "Product Name":
             by = "Product name"
         if by_what == "Product ID":
             by = "Product id"
         if by_what == "Vendor ID":
             by = "Vendor id"
-        with open(inventory_path, mode='r', newline='') as file:
+        with open(display_csv_path, mode='r', newline='') as file:
             reader = csv.DictReader(file)
             to_write = []
             for row in reader:
                 print(row)
                 if str(query).lower() in row[by].lower():
                     to_write.append(row)
+            #print((to_write))
             if to_write == []:
-                output = False
+                no_output = True
             else:
-                output=True
+                no_output = False
             with open(display_csv_path, mode='w', newline='') as search_file:
                 writer = csv.DictWriter(search_file, fieldnames=reader.fieldnames)
                 writer.writeheader()
                 writer.writerows(to_write)
-        if not output:
+        if no_output:
             return False
         else:
             with open(display_csv_path, mode='r', newline='') as search_file:
@@ -106,28 +107,32 @@ class Inventory:
             return list(reader)
 
     def sort_inventory(self, sort_by, sort_type):
+        if sort_type == "Ascending":
+            sort_type_bool = False
+        else:
+            sort_type_bool = True
         if sort_by == "Expiry Date":
             with open(display_csv_path, mode='r', newline='') as file:
                 reader = csv.DictReader(file)
                 rows = list(reader)
-                if sort_type == "Ascending":
-                    sort_type_bool = False
-                else:
-                    sort_type_bool = True
                 sorted_rows = sorted(rows, key=lambda x: datetime.strptime(x['Expiry Date'], "%d-%m-%Y"), reverse=sort_type_bool)
                 with open(display_csv_path, mode='w', newline='') as sort_file:
                     writer = csv.DictWriter(sort_file, fieldnames=reader.fieldnames)
                     writer.writeheader()
                     writer.writerows(sorted_rows)
-
+        elif sort_by == "Quantity" or "Unit Cost price" or "Unit Sale price" or "Stock value":
+            with open(display_csv_path, mode='r', newline='') as file:
+                reader = csv.DictReader(file)
+                rows = list(reader)
+                sorted_rows = sorted(rows, key=lambda x: int(x[sort_by]), reverse=sort_type_bool)
+                with open(display_csv_path, mode='w', newline='') as sort_file:
+                    writer = csv.DictWriter(sort_file, fieldnames=reader.fieldnames)
+                    writer.writeheader()
+                    writer.writerows(sorted_rows)
         else:
             with open(display_csv_path, mode='r', newline='') as file:
                 reader = csv.DictReader(file)
                 rows = list(reader)
-                if sort_type == "Ascending":
-                    sort_type_bool = False
-                else:
-                    sort_type_bool = True
                 if sort_by == "Product Name":
                     sort_by = "Product name"
                 sorted_rows = sorted(rows, key=lambda x: x[sort_by], reverse=sort_type_bool)
